@@ -9,8 +9,80 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SurvivalRouteImport } from './routes/survival'
+import { Route as SosRouteImport } from './routes/sos'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SafariRouteImport } from './routes/safari'
+import { Route as MapRouteImport } from './routes/map'
+import { Route as KnowledgePacksRouteImport } from './routes/knowledge-packs'
+import { Route as GuardianRouteImport } from './routes/guardian'
+import { Route as ExpeditionRouteImport } from './routes/expedition'
+import { Route as EventsRouteImport } from './routes/events'
+import { Route as ConvoyRouteImport } from './routes/convoy'
+import { Route as CommunityRouteImport } from './routes/community'
+import { Route as AiAssistantRouteImport } from './routes/ai-assistant'
 import { Route as IndexRouteImport } from './routes/index'
 
+const SurvivalRoute = SurvivalRouteImport.update({
+  id: '/survival',
+  path: '/survival',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SosRoute = SosRouteImport.update({
+  id: '/sos',
+  path: '/sos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SafariRoute = SafariRouteImport.update({
+  id: '/safari',
+  path: '/safari',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MapRoute = MapRouteImport.update({
+  id: '/map',
+  path: '/map',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KnowledgePacksRoute = KnowledgePacksRouteImport.update({
+  id: '/knowledge-packs',
+  path: '/knowledge-packs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuardianRoute = GuardianRouteImport.update({
+  id: '/guardian',
+  path: '/guardian',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExpeditionRoute = ExpeditionRouteImport.update({
+  id: '/expedition',
+  path: '/expedition',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsRoute = EventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConvoyRoute = ConvoyRouteImport.update({
+  id: '/convoy',
+  path: '/convoy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommunityRoute = CommunityRouteImport.update({
+  id: '/community',
+  path: '/community',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiAssistantRoute = AiAssistantRouteImport.update({
+  id: '/ai-assistant',
+  path: '/ai-assistant',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +91,200 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ai-assistant': typeof AiAssistantRoute
+  '/community': typeof CommunityRoute
+  '/convoy': typeof ConvoyRoute
+  '/events': typeof EventsRoute
+  '/expedition': typeof ExpeditionRoute
+  '/guardian': typeof GuardianRoute
+  '/knowledge-packs': typeof KnowledgePacksRoute
+  '/map': typeof MapRoute
+  '/safari': typeof SafariRoute
+  '/settings': typeof SettingsRoute
+  '/sos': typeof SosRoute
+  '/survival': typeof SurvivalRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ai-assistant': typeof AiAssistantRoute
+  '/community': typeof CommunityRoute
+  '/convoy': typeof ConvoyRoute
+  '/events': typeof EventsRoute
+  '/expedition': typeof ExpeditionRoute
+  '/guardian': typeof GuardianRoute
+  '/knowledge-packs': typeof KnowledgePacksRoute
+  '/map': typeof MapRoute
+  '/safari': typeof SafariRoute
+  '/settings': typeof SettingsRoute
+  '/sos': typeof SosRoute
+  '/survival': typeof SurvivalRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/ai-assistant': typeof AiAssistantRoute
+  '/community': typeof CommunityRoute
+  '/convoy': typeof ConvoyRoute
+  '/events': typeof EventsRoute
+  '/expedition': typeof ExpeditionRoute
+  '/guardian': typeof GuardianRoute
+  '/knowledge-packs': typeof KnowledgePacksRoute
+  '/map': typeof MapRoute
+  '/safari': typeof SafariRoute
+  '/settings': typeof SettingsRoute
+  '/sos': typeof SosRoute
+  '/survival': typeof SurvivalRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/ai-assistant'
+    | '/community'
+    | '/convoy'
+    | '/events'
+    | '/expedition'
+    | '/guardian'
+    | '/knowledge-packs'
+    | '/map'
+    | '/safari'
+    | '/settings'
+    | '/sos'
+    | '/survival'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/ai-assistant'
+    | '/community'
+    | '/convoy'
+    | '/events'
+    | '/expedition'
+    | '/guardian'
+    | '/knowledge-packs'
+    | '/map'
+    | '/safari'
+    | '/settings'
+    | '/sos'
+    | '/survival'
+  id:
+    | '__root__'
+    | '/'
+    | '/ai-assistant'
+    | '/community'
+    | '/convoy'
+    | '/events'
+    | '/expedition'
+    | '/guardian'
+    | '/knowledge-packs'
+    | '/map'
+    | '/safari'
+    | '/settings'
+    | '/sos'
+    | '/survival'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AiAssistantRoute: typeof AiAssistantRoute
+  CommunityRoute: typeof CommunityRoute
+  ConvoyRoute: typeof ConvoyRoute
+  EventsRoute: typeof EventsRoute
+  ExpeditionRoute: typeof ExpeditionRoute
+  GuardianRoute: typeof GuardianRoute
+  KnowledgePacksRoute: typeof KnowledgePacksRoute
+  MapRoute: typeof MapRoute
+  SafariRoute: typeof SafariRoute
+  SettingsRoute: typeof SettingsRoute
+  SosRoute: typeof SosRoute
+  SurvivalRoute: typeof SurvivalRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/survival': {
+      id: '/survival'
+      path: '/survival'
+      fullPath: '/survival'
+      preLoaderRoute: typeof SurvivalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sos': {
+      id: '/sos'
+      path: '/sos'
+      fullPath: '/sos'
+      preLoaderRoute: typeof SosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/safari': {
+      id: '/safari'
+      path: '/safari'
+      fullPath: '/safari'
+      preLoaderRoute: typeof SafariRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/map': {
+      id: '/map'
+      path: '/map'
+      fullPath: '/map'
+      preLoaderRoute: typeof MapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/knowledge-packs': {
+      id: '/knowledge-packs'
+      path: '/knowledge-packs'
+      fullPath: '/knowledge-packs'
+      preLoaderRoute: typeof KnowledgePacksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guardian': {
+      id: '/guardian'
+      path: '/guardian'
+      fullPath: '/guardian'
+      preLoaderRoute: typeof GuardianRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/expedition': {
+      id: '/expedition'
+      path: '/expedition'
+      fullPath: '/expedition'
+      preLoaderRoute: typeof ExpeditionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/convoy': {
+      id: '/convoy'
+      path: '/convoy'
+      fullPath: '/convoy'
+      preLoaderRoute: typeof ConvoyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/community': {
+      id: '/community'
+      path: '/community'
+      fullPath: '/community'
+      preLoaderRoute: typeof CommunityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-assistant': {
+      id: '/ai-assistant'
+      path: '/ai-assistant'
+      fullPath: '/ai-assistant'
+      preLoaderRoute: typeof AiAssistantRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,17 +297,19 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AiAssistantRoute: AiAssistantRoute,
+  CommunityRoute: CommunityRoute,
+  ConvoyRoute: ConvoyRoute,
+  EventsRoute: EventsRoute,
+  ExpeditionRoute: ExpeditionRoute,
+  GuardianRoute: GuardianRoute,
+  KnowledgePacksRoute: KnowledgePacksRoute,
+  MapRoute: MapRoute,
+  SafariRoute: SafariRoute,
+  SettingsRoute: SettingsRoute,
+  SosRoute: SosRoute,
+  SurvivalRoute: SurvivalRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
