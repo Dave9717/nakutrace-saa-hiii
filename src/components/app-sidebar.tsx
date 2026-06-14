@@ -1,4 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
+import { useAuth } from "@/hooks/use-auth";
 import {
   Map as MapIcon,
   Compass,
@@ -12,6 +13,8 @@ import {
   PackageOpen,
   Settings,
   Home,
+  LogIn,
+  LayoutDashboard,
 } from "lucide-react";
 import {
   Sidebar,
@@ -52,7 +55,11 @@ export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const pathname = useRouterState({ select: (r) => r.location.pathname });
+  const { user } = useAuth();
   const isActive = (p: string) => (p === "/" ? pathname === "/" : pathname.startsWith(p));
+  const account = user
+    ? [{ title: "Dashboard", url: "/dashboard", icon: LayoutDashboard }]
+    : [{ title: "Sign in", url: "/auth", icon: LogIn }];
 
   const renderGroup = (label: string, items: typeof primary) => (
     <SidebarGroup>
@@ -95,6 +102,7 @@ export function AppSidebar() {
         {renderGroup("Navigate", primary)}
         {renderGroup("Field Tools", tools)}
         {renderGroup("Intelligence", knowledge)}
+        {renderGroup("Account", account)}
       </SidebarContent>
     </Sidebar>
   );

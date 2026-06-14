@@ -20,8 +20,12 @@ import { Route as ExpeditionRouteImport } from './routes/expedition'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as ConvoyRouteImport } from './routes/convoy'
 import { Route as CommunityRouteImport } from './routes/community'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AiAssistantRouteImport } from './routes/ai-assistant'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 
 const SurvivalRoute = SurvivalRouteImport.update({
   id: '/survival',
@@ -78,9 +82,18 @@ const CommunityRoute = CommunityRouteImport.update({
   path: '/community',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AiAssistantRoute = AiAssistantRouteImport.update({
   id: '/ai-assistant',
   path: '/ai-assistant',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -88,10 +101,21 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ai-assistant': typeof AiAssistantRoute
+  '/auth': typeof AuthRoute
   '/community': typeof CommunityRoute
   '/convoy': typeof ConvoyRoute
   '/events': typeof EventsRoute
@@ -103,10 +127,13 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/sos': typeof SosRoute
   '/survival': typeof SurvivalRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ai-assistant': typeof AiAssistantRoute
+  '/auth': typeof AuthRoute
   '/community': typeof CommunityRoute
   '/convoy': typeof ConvoyRoute
   '/events': typeof EventsRoute
@@ -118,11 +145,15 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/sos': typeof SosRoute
   '/survival': typeof SurvivalRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/ai-assistant': typeof AiAssistantRoute
+  '/auth': typeof AuthRoute
   '/community': typeof CommunityRoute
   '/convoy': typeof ConvoyRoute
   '/events': typeof EventsRoute
@@ -134,12 +165,15 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/sos': typeof SosRoute
   '/survival': typeof SurvivalRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/ai-assistant'
+    | '/auth'
     | '/community'
     | '/convoy'
     | '/events'
@@ -151,10 +185,13 @@ export interface FileRouteTypes {
     | '/settings'
     | '/sos'
     | '/survival'
+    | '/admin'
+    | '/dashboard'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/ai-assistant'
+    | '/auth'
     | '/community'
     | '/convoy'
     | '/events'
@@ -166,10 +203,14 @@ export interface FileRouteTypes {
     | '/settings'
     | '/sos'
     | '/survival'
+    | '/admin'
+    | '/dashboard'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/ai-assistant'
+    | '/auth'
     | '/community'
     | '/convoy'
     | '/events'
@@ -181,11 +222,15 @@ export interface FileRouteTypes {
     | '/settings'
     | '/sos'
     | '/survival'
+    | '/_authenticated/admin'
+    | '/_authenticated/dashboard'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AiAssistantRoute: typeof AiAssistantRoute
+  AuthRoute: typeof AuthRoute
   CommunityRoute: typeof CommunityRoute
   ConvoyRoute: typeof ConvoyRoute
   EventsRoute: typeof EventsRoute
@@ -278,11 +323,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CommunityRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ai-assistant': {
       id: '/ai-assistant'
       path: '/ai-assistant'
       fullPath: '/ai-assistant'
       preLoaderRoute: typeof AiAssistantRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -292,12 +351,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AiAssistantRoute: AiAssistantRoute,
+  AuthRoute: AuthRoute,
   CommunityRoute: CommunityRoute,
   ConvoyRoute: ConvoyRoute,
   EventsRoute: EventsRoute,
