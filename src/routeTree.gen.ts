@@ -20,6 +20,7 @@ import { Route as ExpeditionRouteImport } from './routes/expedition'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as ConvoyRouteImport } from './routes/convoy'
 import { Route as CommunityRouteImport } from './routes/community'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AiAssistantRouteImport } from './routes/ai-assistant'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -78,6 +79,11 @@ const CommunityRoute = CommunityRouteImport.update({
   path: '/community',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AiAssistantRoute = AiAssistantRouteImport.update({
   id: '/ai-assistant',
   path: '/ai-assistant',
@@ -92,6 +98,7 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ai-assistant': typeof AiAssistantRoute
+  '/auth': typeof AuthRoute
   '/community': typeof CommunityRoute
   '/convoy': typeof ConvoyRoute
   '/events': typeof EventsRoute
@@ -107,6 +114,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ai-assistant': typeof AiAssistantRoute
+  '/auth': typeof AuthRoute
   '/community': typeof CommunityRoute
   '/convoy': typeof ConvoyRoute
   '/events': typeof EventsRoute
@@ -123,6 +131,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/ai-assistant': typeof AiAssistantRoute
+  '/auth': typeof AuthRoute
   '/community': typeof CommunityRoute
   '/convoy': typeof ConvoyRoute
   '/events': typeof EventsRoute
@@ -140,6 +149,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/ai-assistant'
+    | '/auth'
     | '/community'
     | '/convoy'
     | '/events'
@@ -155,6 +165,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/ai-assistant'
+    | '/auth'
     | '/community'
     | '/convoy'
     | '/events'
@@ -170,6 +181,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/ai-assistant'
+    | '/auth'
     | '/community'
     | '/convoy'
     | '/events'
@@ -186,6 +198,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AiAssistantRoute: typeof AiAssistantRoute
+  AuthRoute: typeof AuthRoute
   CommunityRoute: typeof CommunityRoute
   ConvoyRoute: typeof ConvoyRoute
   EventsRoute: typeof EventsRoute
@@ -278,6 +291,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CommunityRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ai-assistant': {
       id: '/ai-assistant'
       path: '/ai-assistant'
@@ -298,6 +318,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AiAssistantRoute: AiAssistantRoute,
+  AuthRoute: AuthRoute,
   CommunityRoute: CommunityRoute,
   ConvoyRoute: ConvoyRoute,
   EventsRoute: EventsRoute,
