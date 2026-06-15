@@ -15,7 +15,6 @@ import {
   Radio,
   ShieldAlert,
   Loader2,
-  MapPin,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
