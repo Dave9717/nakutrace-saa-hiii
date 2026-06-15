@@ -133,6 +133,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          join_code: string
           name: string
           owner_id: string
           region: string | null
@@ -142,6 +143,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          join_code?: string
           name: string
           owner_id: string
           region?: string | null
@@ -151,6 +153,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          join_code?: string
           name?: string
           owner_id?: string
           region?: string | null
@@ -257,6 +260,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      gen_join_code: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
