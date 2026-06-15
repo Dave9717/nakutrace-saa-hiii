@@ -27,7 +27,8 @@ export const Route = createFileRoute("/sos")({
   component: SosPage,
 });
 
-const types = [
+type SosType = { icon: typeof Heart; label: string; severity: string; tone?: "destructive" };
+const types: SosType[] = [
   { icon: Heart, label: "Medical", severity: "critical", tone: "destructive" },
   { icon: Wrench, label: "Vehicle breakdown", severity: "medium" },
   { icon: Shield, label: "Security threat", severity: "critical", tone: "destructive" },
@@ -36,7 +37,7 @@ const types = [
   { icon: Flame, label: "Fire", severity: "critical", tone: "destructive" },
   { icon: Waves, label: "Flood", severity: "high" },
   { icon: Radio, label: "Search & rescue", severity: "high" },
-] as const;
+];
 
 type Alert = { id: string; message: string | null; severity: string; status: string; created_at: string; latitude: number | null; longitude: number | null };
 
