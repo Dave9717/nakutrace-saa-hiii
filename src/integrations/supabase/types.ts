@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      community_reports: {
+        Row: {
+          created_at: string
+          description: string | null
+          expires_at: string | null
+          id: string
+          kind: string
+          latitude: number | null
+          longitude: number | null
+          severity: string
+          title: string
+          updated_at: string
+          user_id: string
+          verified_count: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          expires_at?: string | null
+          id?: string
+          kind: string
+          latitude?: number | null
+          longitude?: number | null
+          severity?: string
+          title: string
+          updated_at?: string
+          user_id: string
+          verified_count?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          expires_at?: string | null
+          id?: string
+          kind?: string
+          latitude?: number | null
+          longitude?: number | null
+          severity?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+          verified_count?: number
+        }
+        Relationships: []
+      }
       convoy_members: {
         Row: {
           convoy_id: string
@@ -46,10 +91,49 @@ export type Database = {
           },
         ]
       }
+      convoy_messages: {
+        Row: {
+          body: string
+          convoy_id: string
+          created_at: string
+          id: string
+          latitude: number | null
+          longitude: number | null
+          user_id: string
+        }
+        Insert: {
+          body: string
+          convoy_id: string
+          created_at?: string
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          user_id: string
+        }
+        Update: {
+          body?: string
+          convoy_id?: string
+          created_at?: string
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "convoy_messages_convoy_id_fkey"
+            columns: ["convoy_id"]
+            isOneToOne: false
+            referencedRelation: "convoys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       convoys: {
         Row: {
           created_at: string
           id: string
+          join_code: string
           name: string
           owner_id: string
           region: string | null
@@ -59,6 +143,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          join_code?: string
           name: string
           owner_id: string
           region?: string | null
@@ -68,6 +153,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          join_code?: string
           name?: string
           owner_id?: string
           region?: string | null
@@ -174,6 +260,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      gen_join_code: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

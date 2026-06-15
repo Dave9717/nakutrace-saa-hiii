@@ -3,9 +3,11 @@ import { AppShell } from "@/components/app-shell";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
-import { ShieldAlert, MapPin, LogOut, UserCog } from "lucide-react";
+import { ShieldAlert, LogOut, UserCog, Save } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
 
@@ -23,6 +25,11 @@ function Dashboard() {
   const [roles, setRoles] = useState<string[]>([]);
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState(false);
+  const [callSign, setCallSign] = useState("");
+  const [homeRegion, setHomeRegion] = useState("");
+  const [displayName, setDisplayName] = useState("");
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -34,6 +41,11 @@ function Dashboard() {
         supabase.from("sos_alerts").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(10),
       ]);
       setProfile(p as Profile | null);
+      if (p) {
+        setCallSign(p.call_sign ?? "");
+        setHomeRegion(p.home_region ?? "");
+        setDisplayName(p.display_name ?? "");
+      }
       setRoles((r ?? []).map((x: { role: string }) => x.role));
       setAlerts((a ?? []) as Alert[]);
       setLoading(false);
@@ -47,6 +59,22 @@ function Dashboard() {
   };
 
   const isAdmin = roles.includes("admin");
+
+  async function saveProfile() {
+    if (!profile) return;
+    setSaving(true);
+    const { data, error } = await supabase
+      .from("profiles")
+      .update({ call_sign: callSign || null, home_region: homeRegion || null, display_name: displayName || null })
+      .eq("id", profile.id)
+      .select()
+      .single();
+    setSaving(false);
+    if (error) return toast.error(error.message);
+    setProfile(data as Profile);
+    setEditing(false);
+    toast.success("Profile updated");
+  }
 
   return (
     <AppShell>
@@ -80,6 +108,32 @@ function Dashboard() {
             </div>
           </Card>
         </div>
+
+        <Card className="p-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Field profile</h2>
+            <Button size="sm" variant="outline" onClick={() => setEditing((v) => !v)}>{editing ? "Cancel" : "Edit"}</Button>
+          </div>
+          {editing && (
+            <div className="mt-4 grid gap-3 md:grid-cols-3">
+              <div>
+                <Label className="text-xs">Display name</Label>
+                <Input value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
+              </div>
+              <div>
+                <Label className="text-xs">Call sign</Label>
+                <Input value={callSign} onChange={(e) => setCallSign(e.target.value)} placeholder="e.g. SIMBA-1" />
+              </div>
+              <div>
+                <Label className="text-xs">Home region</Label>
+                <Input value={homeRegion} onChange={(e) => setHomeRegion(e.target.value)} placeholder="e.g. Samburu, KE" />
+              </div>
+              <div className="md:col-span-3">
+                <Button onClick={saveProfile} disabled={saving} className="gap-2"><Save className="h-4 w-4" />{saving ? "Saving…" : "Save profile"}</Button>
+              </div>
+            </div>
+          )}
+        </Card>
 
         <Card className="p-4">
           <div className="mb-3 flex items-center justify-between">
