@@ -50,7 +50,7 @@ function SosPage() {
     if (!navigator.geolocation) return;
     const id = navigator.geolocation.watchPosition(
       (p) => setCoords({ lat: p.coords.latitude, lng: p.coords.longitude }),
-      () => {},
+      (err) => console.warn("Geolocation unavailable", err.message),
       { enableHighAccuracy: true, maximumAge: 10_000 },
     );
     return () => navigator.geolocation.clearWatch(id);
@@ -59,12 +59,13 @@ function SosPage() {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("sos_alerts")
         .select("id,message,severity,status,created_at,latitude,longitude")
         .eq("status", "active")
         .order("created_at", { ascending: false })
         .limit(20);
+      if (error) console.error("Failed to load SOS alerts", error);
       if (!cancelled) setLive((data ?? []) as Alert[]);
     })();
     const channel = supabase

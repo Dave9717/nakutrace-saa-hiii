@@ -33,13 +33,20 @@ function Dashboard() {
 
   useEffect(() => {
     (async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user }, error: userErr } = await supabase.auth.getUser();
+      if (userErr) { console.error("Failed to get current user", userErr); setLoading(false); return; }
       if (!user) return;
-      const [{ data: p }, { data: r }, { data: a }] = await Promise.all([
+      const [profileResult, rolesResult, alertsResult] = await Promise.all([
         supabase.from("profiles").select("*").eq("id", user.id).maybeSingle(),
         supabase.from("user_roles").select("role").eq("user_id", user.id),
         supabase.from("sos_alerts").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(10),
       ]);
+      if (profileResult.error) console.error("Failed to load profile", profileResult.error);
+      if (rolesResult.error) console.error("Failed to load roles", rolesResult.error);
+      if (alertsResult.error) console.error("Failed to load alerts", alertsResult.error);
+      const p = profileResult.data;
+      const r = rolesResult.data;
+      const a = alertsResult.data;
       setProfile(p as Profile | null);
       if (p) {
         setCallSign(p.call_sign ?? "");
@@ -53,7 +60,8 @@ function Dashboard() {
   }, []);
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+    if (error) return toast.error(error.message);
     toast.success("Signed out");
     navigate({ to: "/" });
   };

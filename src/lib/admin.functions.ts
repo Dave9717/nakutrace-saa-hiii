@@ -12,15 +12,18 @@ export const listUsers = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     await assertAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const [{ data: profiles }, { data: roles }, { data: alerts }] = await Promise.all([
+    const [profilesResult, rolesResult, alertsResult] = await Promise.all([
       supabaseAdmin.from("profiles").select("id, display_name, call_sign, avatar_url, home_region, created_at").order("created_at", { ascending: false }),
       supabaseAdmin.from("user_roles").select("user_id, role"),
       supabaseAdmin.from("sos_alerts").select("id, status").eq("status", "active"),
     ]);
+    if (profilesResult.error) throw profilesResult.error;
+    if (rolesResult.error) throw rolesResult.error;
+    if (alertsResult.error) throw alertsResult.error;
     return {
-      profiles: profiles ?? [],
-      roles: roles ?? [],
-      activeAlertCount: (alerts ?? []).length,
+      profiles: profilesResult.data,
+      roles: rolesResult.data,
+      activeAlertCount: alertsResult.data.length,
     };
   });
 
@@ -29,12 +32,13 @@ export const listAllAlerts = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     await assertAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data } = await supabaseAdmin
+    const { data, error } = await supabaseAdmin
       .from("sos_alerts")
       .select("id, user_id, message, latitude, longitude, status, severity, created_at, resolved_at")
       .order("created_at", { ascending: false })
       .limit(100);
-    return { alerts: data ?? [] };
+    if (error) throw error;
+    return { alerts: data };
   });
 
 export const setUserRole = createServerFn({ method: "POST" })
