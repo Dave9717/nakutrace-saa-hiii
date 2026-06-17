@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const Schema = z.object({
   messages: z.array(
@@ -13,6 +14,7 @@ const Schema = z.object({
 const SYSTEM = `You are the NAKUTRACE SAI field assistant — an offline-first survival, navigation, safari and emergency guide for Africa and remote environments. Be calm, concise, practical. Give numbered steps in emergencies. Always remind users that AI is informational and never replaces professional emergency services. Use kilometers, litres, Celsius.`;
 
 export const askAssistant = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input) => Schema.parse(input))
   .handler(async ({ data }) => {
     const apiKey = process.env.LOVABLE_API_KEY;
