@@ -91,7 +91,7 @@ function CommunityPage() {
 
   async function verify(r: Report) {
     if (!user) return toast.error("Sign in to verify.");
-    const { error } = await supabase.from("community_reports").update({ verified_count: r.verified_count + 1 }).eq("id", r.id);
+    const { error } = await supabase.rpc("increment_verified_count", { _report_id: r.id });
     if (error) toast.error(error.message);
   }
 
