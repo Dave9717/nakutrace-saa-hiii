@@ -162,6 +162,84 @@ export type Database = {
         }
         Relationships: []
       }
+      guardian_checkins: {
+        Row: {
+          created_at: string
+          id: string
+          latitude: number | null
+          longitude: number | null
+          note: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          note?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          note?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      guardians: {
+        Row: {
+          contact: string
+          created_at: string
+          id: string
+          name: string
+          relationship: string | null
+          user_id: string
+        }
+        Insert: {
+          contact: string
+          created_at?: string
+          id?: string
+          name: string
+          relationship?: string | null
+          user_id: string
+        }
+        Update: {
+          contact?: string
+          created_at?: string
+          id?: string
+          name?: string
+          relationship?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      knowledge_pack_downloads: {
+        Row: {
+          downloaded_at: string
+          id: string
+          pack_slug: string
+          user_id: string
+        }
+        Insert: {
+          downloaded_at?: string
+          id?: string
+          pack_slug: string
+          user_id: string
+        }
+        Update: {
+          downloaded_at?: string
+          id?: string
+          pack_slug?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
