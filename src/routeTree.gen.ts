@@ -13,6 +13,7 @@ import { Route as SurvivalRouteImport } from './routes/survival'
 import { Route as SosRouteImport } from './routes/sos'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SafariRouteImport } from './routes/safari'
+import { Route as MapRouteImport } from './routes/map'
 import { Route as KnowledgePacksRouteImport } from './routes/knowledge-packs'
 import { Route as GuardianRouteImport } from './routes/guardian'
 import { Route as ExpeditionRouteImport } from './routes/expedition'
@@ -44,6 +45,11 @@ const SettingsRoute = SettingsRouteImport.update({
 const SafariRoute = SafariRouteImport.update({
   id: '/safari',
   path: '/safari',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MapRoute = MapRouteImport.update({
+  id: '/map',
+  path: '/map',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KnowledgePacksRoute = KnowledgePacksRouteImport.update({
@@ -116,6 +122,7 @@ export interface FileRoutesByFullPath {
   '/expedition': typeof ExpeditionRoute
   '/guardian': typeof GuardianRoute
   '/knowledge-packs': typeof KnowledgePacksRoute
+  '/map': typeof MapRoute
   '/safari': typeof SafariRoute
   '/settings': typeof SettingsRoute
   '/sos': typeof SosRoute
@@ -133,6 +140,7 @@ export interface FileRoutesByTo {
   '/expedition': typeof ExpeditionRoute
   '/guardian': typeof GuardianRoute
   '/knowledge-packs': typeof KnowledgePacksRoute
+  '/map': typeof MapRoute
   '/safari': typeof SafariRoute
   '/settings': typeof SettingsRoute
   '/sos': typeof SosRoute
@@ -152,6 +160,7 @@ export interface FileRoutesById {
   '/expedition': typeof ExpeditionRoute
   '/guardian': typeof GuardianRoute
   '/knowledge-packs': typeof KnowledgePacksRoute
+  '/map': typeof MapRoute
   '/safari': typeof SafariRoute
   '/settings': typeof SettingsRoute
   '/sos': typeof SosRoute
@@ -171,6 +180,7 @@ export interface FileRouteTypes {
     | '/expedition'
     | '/guardian'
     | '/knowledge-packs'
+    | '/map'
     | '/safari'
     | '/settings'
     | '/sos'
@@ -188,6 +198,7 @@ export interface FileRouteTypes {
     | '/expedition'
     | '/guardian'
     | '/knowledge-packs'
+    | '/map'
     | '/safari'
     | '/settings'
     | '/sos'
@@ -206,6 +217,7 @@ export interface FileRouteTypes {
     | '/expedition'
     | '/guardian'
     | '/knowledge-packs'
+    | '/map'
     | '/safari'
     | '/settings'
     | '/sos'
@@ -225,6 +237,7 @@ export interface RootRouteChildren {
   ExpeditionRoute: typeof ExpeditionRoute
   GuardianRoute: typeof GuardianRoute
   KnowledgePacksRoute: typeof KnowledgePacksRoute
+  MapRoute: typeof MapRoute
   SafariRoute: typeof SafariRoute
   SettingsRoute: typeof SettingsRoute
   SosRoute: typeof SosRoute
@@ -259,6 +272,13 @@ declare module '@tanstack/react-router' {
       path: '/safari'
       fullPath: '/safari'
       preLoaderRoute: typeof SafariRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/map': {
+      id: '/map'
+      path: '/map'
+      fullPath: '/map'
+      preLoaderRoute: typeof MapRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/knowledge-packs': {
@@ -372,6 +392,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExpeditionRoute: ExpeditionRoute,
   GuardianRoute: GuardianRoute,
   KnowledgePacksRoute: KnowledgePacksRoute,
+  MapRoute: MapRoute,
   SafariRoute: SafariRoute,
   SettingsRoute: SettingsRoute,
   SosRoute: SosRoute,
