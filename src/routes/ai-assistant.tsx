@@ -9,6 +9,7 @@ import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { askAssistant } from "@/lib/ai.functions";
 import { toast } from "sonner";
+import { AI_DISCLAIMER } from "@/lib/utils";
 
 export const Route = createFileRoute("/ai-assistant")({
   head: () => ({ meta: [{ title: "Offline AI Assistant — NAKUTRACE SAI" }] }),
@@ -52,7 +53,10 @@ function AIPage() {
   }
 
   return (
-    <AppShell title="Field AI Assistant" subtitle="Powered by Lovable AI · cached knowledge fallback">
+    <AppShell
+      title="Field AI Assistant"
+      subtitle="Powered by Lovable AI · cached knowledge fallback"
+    >
       <div className="mx-auto flex max-w-3xl flex-col gap-4 px-4 py-8 md:px-8">
         <Card className="p-6">
           <div className="flex items-center gap-2">
@@ -129,10 +133,7 @@ function AIPage() {
         </Card>
 
         <Card className="border-destructive/30 bg-destructive/5 p-4">
-          <p className="text-xs text-muted-foreground">
-            AI guidance is informational only and must not replace professional emergency, rescue,
-            navigation, medical, or security services.
-          </p>
+          <p className="text-xs text-muted-foreground">{AI_DISCLAIMER}</p>
         </Card>
       </div>
     </AppShell>

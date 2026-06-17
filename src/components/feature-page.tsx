@@ -3,6 +3,7 @@ import { AppShell } from "@/components/app-shell";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { LucideIcon } from "lucide-react";
+import { IconBox } from "@/components/icon-box";
 
 export interface FeatureItem {
   icon: LucideIcon;
@@ -36,9 +37,7 @@ export function FeaturePage({
       >
         <div className="mx-auto max-w-6xl px-6 py-12">
           <div className="flex items-start gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/15 text-primary">
-              <Icon className="h-6 w-6" />
-            </div>
+            <IconBox icon={Icon} size="lg" />
             <div>
               <h1 className="text-2xl font-bold tracking-tight md:text-3xl">{headline}</h1>
               <p className="mt-2 max-w-2xl text-sm text-muted-foreground md:text-base">{intro}</p>

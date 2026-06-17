@@ -16,6 +16,7 @@ import {
   WifiOff,
   Navigation as NavIcon,
 } from "lucide-react";
+import { AI_DISCLAIMER } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -37,14 +38,54 @@ export const Route = createFileRoute("/")({
 });
 
 const modes = [
-  { to: "/map", icon: MapIcon, title: "Offline Maps", desc: "Vector tiles, GPS routing, terrain awareness." },
-  { to: "/expedition", icon: Compass, title: "Expedition Mode", desc: "Unified nav, survival, convoy & SOS." },
-  { to: "/convoy", icon: Users, title: "Convoy", desc: "Live tracking, separation alerts, group SOS." },
-  { to: "/sos", icon: ShieldAlert, title: "SOS & Rescue", desc: "Mesh-broadcast emergencies, evidence vault." },
-  { to: "/survival", icon: Mountain, title: "Survival Mode", desc: "Compass, altitude, offline survival knowledge." },
-  { to: "/safari", icon: Camera, title: "Safari Explorer", desc: "Wildlife sightings, scenic points, migration." },
-  { to: "/guardian", icon: Heart, title: "Guardian Mode", desc: "Trusted contacts get check-ins & alerts." },
-  { to: "/ai-assistant", icon: Sparkles, title: "Offline AI", desc: "On-device survival & navigation guidance." },
+  {
+    to: "/map",
+    icon: MapIcon,
+    title: "Offline Maps",
+    desc: "Vector tiles, GPS routing, terrain awareness.",
+  },
+  {
+    to: "/expedition",
+    icon: Compass,
+    title: "Expedition Mode",
+    desc: "Unified nav, survival, convoy & SOS.",
+  },
+  {
+    to: "/convoy",
+    icon: Users,
+    title: "Convoy",
+    desc: "Live tracking, separation alerts, group SOS.",
+  },
+  {
+    to: "/sos",
+    icon: ShieldAlert,
+    title: "SOS & Rescue",
+    desc: "Mesh-broadcast emergencies, evidence vault.",
+  },
+  {
+    to: "/survival",
+    icon: Mountain,
+    title: "Survival Mode",
+    desc: "Compass, altitude, offline survival knowledge.",
+  },
+  {
+    to: "/safari",
+    icon: Camera,
+    title: "Safari Explorer",
+    desc: "Wildlife sightings, scenic points, migration.",
+  },
+  {
+    to: "/guardian",
+    icon: Heart,
+    title: "Guardian Mode",
+    desc: "Trusted contacts get check-ins & alerts.",
+  },
+  {
+    to: "/ai-assistant",
+    icon: Sparkles,
+    title: "Offline AI",
+    desc: "On-device survival & navigation guidance.",
+  },
 ];
 
 function Index() {
@@ -96,10 +137,7 @@ function Index() {
               ["100%", "Works offline"],
               ["1-tap", "Return to safety"],
             ].map(([v, l]) => (
-              <div
-                key={l}
-                className="rounded-lg border border-border bg-card/60 p-4 backdrop-blur"
-              >
+              <div key={l} className="rounded-lg border border-border bg-card/60 p-4 backdrop-blur">
                 <div className="text-2xl font-bold text-primary">{v}</div>
                 <div className="mt-1 text-xs uppercase tracking-wider text-muted-foreground">
                   {l}
@@ -141,10 +179,7 @@ function Index() {
               assistant, emergency systems, and safety intelligence remain available even in the
               most remote areas.
             </p>
-            <p className="mt-3 max-w-3xl text-xs italic text-muted-foreground">
-              AI guidance is informational only and must not replace professional emergency,
-              rescue, navigation, medical, or security services.
-            </p>
+            <p className="mt-3 max-w-3xl text-xs italic text-muted-foreground">{AI_DISCLAIMER}</p>
           </Card>
         </div>
       </section>

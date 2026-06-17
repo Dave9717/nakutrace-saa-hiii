@@ -9,6 +9,9 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
+import { formatTimestampWithCoords } from "@/lib/utils";
+import { getGeolocationOnce } from "@/hooks/use-geolocation";
+import { SignInPrompt } from "@/components/sign-in-prompt";
 
 export const Route = createFileRoute("/guardian")({
   head: () => ({ meta: [{ title: "Guardian Mode — NAKUTRACE SAI" }] }),
@@ -16,7 +19,14 @@ export const Route = createFileRoute("/guardian")({
 });
 
 type Guardian = { id: string; name: string; contact: string; relationship: string | null };
-type Checkin = { id: string; status: string; note: string | null; latitude: number | null; longitude: number | null; created_at: string };
+type Checkin = {
+  id: string;
+  status: string;
+  note: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  created_at: string;
+};
 
 function GuardianPage() {
   const { user } = useAuth();
@@ -32,19 +42,29 @@ function GuardianPage() {
     if (!user) return;
     const [{ data: g }, { data: c }] = await Promise.all([
       supabase.from("guardians").select("*").order("created_at", { ascending: false }),
-      supabase.from("guardian_checkins").select("*").order("created_at", { ascending: false }).limit(20),
+      supabase
+        .from("guardian_checkins")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(20),
     ]);
     setGuardians((g ?? []) as Guardian[]);
     setCheckins((c ?? []) as Checkin[]);
   }
-  useEffect(() => { load(); }, [user]);
+  useEffect(() => {
+    load();
+  }, [user]);
 
   async function addGuardian(e: React.FormEvent) {
     e.preventDefault();
     if (!user || !name || !contact) return;
-    const { error } = await supabase.from("guardians").insert({ user_id: user.id, name, contact, relationship: relationship || null });
+    const { error } = await supabase
+      .from("guardians")
+      .insert({ user_id: user.id, name, contact, relationship: relationship || null });
     if (error) return toast.error(error.message);
-    setName(""); setContact(""); setRelationship("");
+    setName("");
+    setContact("");
+    setRelationship("");
     toast.success("Guardian added");
     load();
   }
@@ -58,13 +78,13 @@ function GuardianPage() {
   async function checkIn(status: string) {
     if (!user) return;
     setBusy(true);
-    const coords = await new Promise<GeolocationCoordinates | null>((res) => {
-      if (!navigator.geolocation) return res(null);
-      navigator.geolocation.getCurrentPosition((p) => res(p.coords), () => res(null), { enableHighAccuracy: true, timeout: 5000 });
-    });
+    const coords = await getGeolocationOnce({ enableHighAccuracy: true, timeout: 5000 });
     const { error } = await supabase.from("guardian_checkins").insert({
-      user_id: user.id, status, note: note || null,
-      latitude: coords?.latitude ?? null, longitude: coords?.longitude ?? null,
+      user_id: user.id,
+      status,
+      note: note || null,
+      latitude: coords?.latitude ?? null,
+      longitude: coords?.longitude ?? null,
     });
     setBusy(false);
     if (error) return toast.error(error.message);
@@ -75,13 +95,13 @@ function GuardianPage() {
 
   if (!user) {
     return (
-      <AppShell title="Guardian Mode" subtitle="Sign in to manage your trusted circle">
-        <div className="mx-auto max-w-md p-8 text-center">
-          <Heart className="mx-auto h-10 w-10 text-primary" />
-          <p className="mt-3 text-sm text-muted-foreground">Guardian check-ins require an account.</p>
-          <Button asChild className="mt-4"><Link to="/auth">Sign in</Link></Button>
-        </div>
-      </AppShell>
+      <SignInPrompt
+        title="Guardian Mode"
+        subtitle="Sign in to manage your trusted circle"
+        icon={Heart}
+        heading="Guardian check-ins"
+        description="Guardian check-ins require an account."
+      />
     );
   }
 
@@ -89,39 +109,77 @@ function GuardianPage() {
     <AppShell title="Guardian Mode" subtitle="Your trusted circle, always informed">
       <div className="mx-auto max-w-5xl space-y-6 px-4 py-8 md:px-8">
         <Card className="p-5">
-          <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Quick check-in</h3>
-          <Input placeholder="Optional note (e.g. 'Stopped at fuel station')" value={note} onChange={(e) => setNote(e.target.value)} className="mt-3" />
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Quick check-in
+          </h3>
+          <Input
+            placeholder="Optional note (e.g. 'Stopped at fuel station')"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            className="mt-3"
+          />
           <div className="mt-3 flex flex-wrap gap-2">
-            <Button disabled={busy} onClick={() => checkIn("safe")} className="gap-1">{busy && <Loader2 className="h-4 w-4 animate-spin" />}I'm safe</Button>
-            <Button disabled={busy} variant="outline" onClick={() => checkIn("delayed")}>Delayed</Button>
-            <Button disabled={busy} variant="destructive" onClick={() => checkIn("need_help")}>Need help</Button>
+            <Button disabled={busy} onClick={() => checkIn("safe")} className="gap-1">
+              {busy && <Loader2 className="h-4 w-4 animate-spin" />}I'm safe
+            </Button>
+            <Button disabled={busy} variant="outline" onClick={() => checkIn("delayed")}>
+              Delayed
+            </Button>
+            <Button disabled={busy} variant="destructive" onClick={() => checkIn("need_help")}>
+              Need help
+            </Button>
           </div>
         </Card>
 
         <Card className="p-5">
-          <h3 className="flex items-center gap-2 text-sm font-semibold"><UserCheck className="h-4 w-4 text-primary" /> Trusted contacts ({guardians.length}/8)</h3>
+          <h3 className="flex items-center gap-2 text-sm font-semibold">
+            <UserCheck className="h-4 w-4 text-primary" /> Trusted contacts ({guardians.length}/8)
+          </h3>
           <form onSubmit={addGuardian} className="mt-3 grid gap-2 sm:grid-cols-4">
             <Input placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
-            <Input placeholder="Phone or email" value={contact} onChange={(e) => setContact(e.target.value)} />
-            <Input placeholder="Relationship" value={relationship} onChange={(e) => setRelationship(e.target.value)} />
-            <Button type="submit" disabled={guardians.length >= 8}>Add</Button>
+            <Input
+              placeholder="Phone or email"
+              value={contact}
+              onChange={(e) => setContact(e.target.value)}
+            />
+            <Input
+              placeholder="Relationship"
+              value={relationship}
+              onChange={(e) => setRelationship(e.target.value)}
+            />
+            <Button type="submit" disabled={guardians.length >= 8}>
+              Add
+            </Button>
           </form>
           <ul className="mt-4 divide-y divide-border">
             {guardians.map((g) => (
               <li key={g.id} className="flex items-center justify-between py-2 text-sm">
                 <div>
-                  <div className="font-medium">{g.name} {g.relationship && <span className="text-xs text-muted-foreground">· {g.relationship}</span>}</div>
+                  <div className="font-medium">
+                    {g.name}{" "}
+                    {g.relationship && (
+                      <span className="text-xs text-muted-foreground">· {g.relationship}</span>
+                    )}
+                  </div>
                   <div className="text-xs text-muted-foreground">{g.contact}</div>
                 </div>
-                <Button size="icon" variant="ghost" onClick={() => removeGuardian(g.id)}><Trash2 className="h-4 w-4" /></Button>
+                <Button size="icon" variant="ghost" onClick={() => removeGuardian(g.id)}>
+                  <Trash2 className="h-4 w-4" />
+                </Button>
               </li>
             ))}
-            {guardians.length === 0 && <li className="py-3 text-xs text-muted-foreground">No guardians yet — add up to 8.</li>}
+            {guardians.length === 0 && (
+              <li className="py-3 text-xs text-muted-foreground">
+                No guardians yet — add up to 8.
+              </li>
+            )}
           </ul>
         </Card>
 
         <Card className="p-5">
-          <h3 className="flex items-center gap-2 text-sm font-semibold"><MapPin className="h-4 w-4 text-primary" /> Recent check-ins</h3>
+          <h3 className="flex items-center gap-2 text-sm font-semibold">
+            <MapPin className="h-4 w-4 text-primary" /> Recent check-ins
+          </h3>
           {checkins.length === 0 ? (
             <p className="mt-2 text-xs text-muted-foreground">No check-ins yet.</p>
           ) : (
@@ -131,11 +189,20 @@ function GuardianPage() {
                   <div className="min-w-0">
                     <p className="truncate">{c.note ?? "—"}</p>
                     <p className="text-xs text-muted-foreground">
-                      {new Date(c.created_at).toLocaleString()}
-                      {c.latitude && c.longitude ? ` • ${c.latitude.toFixed(3)}, ${c.longitude.toFixed(3)}` : ""}
+                      {formatTimestampWithCoords(c.created_at, c.latitude, c.longitude)}
                     </p>
                   </div>
-                  <Badge variant={c.status === "need_help" ? "destructive" : c.status === "delayed" ? "secondary" : "outline"}>{c.status}</Badge>
+                  <Badge
+                    variant={
+                      c.status === "need_help"
+                        ? "destructive"
+                        : c.status === "delayed"
+                          ? "secondary"
+                          : "outline"
+                    }
+                  >
+                    {c.status}
+                  </Badge>
                 </li>
               ))}
             </ul>
