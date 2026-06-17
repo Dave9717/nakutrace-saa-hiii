@@ -16,10 +16,14 @@ import {
   ShieldAlert,
   Loader2,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { useGeolocation } from "@/hooks/use-geolocation";
+import { useRealtimeQuery } from "@/hooks/use-realtime-query";
 import { toast } from "sonner";
+import { formatCoords, formatTimestampWithCoords, requireAuth, AI_DISCLAIMER } from "@/lib/utils";
+import { IconBox } from "@/components/icon-box";
 
 export const Route = createFileRoute("/sos")({
   head: () => ({ meta: [{ title: "SOS & Rescue — NAKUTRACE SAI" }] }),
@@ -38,62 +42,40 @@ const types: SosType[] = [
   { icon: Radio, label: "Search & rescue", severity: "high" },
 ];
 
-type Alert = { id: string; message: string | null; severity: string; status: string; created_at: string; latitude: number | null; longitude: number | null };
+type Alert = {
+  id: string;
+  message: string | null;
+  severity: string;
+  status: string;
+  created_at: string;
+  latitude: number | null;
+  longitude: number | null;
+};
 
 function SosPage() {
   const { user } = useAuth();
-  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const coords = useGeolocation({ watch: true, maximumAge: 10_000 });
   const [busy, setBusy] = useState(false);
-  const [live, setLive] = useState<Alert[]>([]);
-
-  useEffect(() => {
-    if (!navigator.geolocation) return;
-    const id = navigator.geolocation.watchPosition(
-      (p) => setCoords({ lat: p.coords.latitude, lng: p.coords.longitude }),
-      () => {},
-      { enableHighAccuracy: true, maximumAge: 10_000 },
-    );
-    return () => navigator.geolocation.clearWatch(id);
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      const { data } = await supabase
-        .from("sos_alerts")
-        .select("id,message,severity,status,created_at,latitude,longitude")
-        .eq("status", "active")
-        .order("created_at", { ascending: false })
-        .limit(20);
-      if (!cancelled) setLive((data ?? []) as Alert[]);
-    })();
-    const channel = supabase
-      .channel("sos-live")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "sos_alerts" },
-        (payload) => {
-          setLive((prev) => {
-            const row = (payload.new ?? payload.old) as Alert;
-            if (payload.eventType === "DELETE") return prev.filter((p) => p.id !== row.id);
-            const others = prev.filter((p) => p.id !== row.id);
-            const next = payload.eventType === "INSERT" || (row as Alert).status === "active" ? [row as Alert, ...others] : others;
-            return next.slice(0, 20);
-          });
-        },
-      )
-      .subscribe();
-    return () => {
-      cancelled = true;
-      supabase.removeChannel(channel);
-    };
-  }, []);
+  const [live] = useRealtimeQuery<Alert>({
+    table: "sos_alerts",
+    channel: "sos-live",
+    select: "id,message,severity,status,created_at,latitude,longitude",
+    filter: { column: "status", value: "active" },
+    limit: 20,
+    onPayload: (prev, payload) => {
+      const row = (payload.new ?? payload.old) as Alert;
+      if (payload.eventType === "DELETE") return prev.filter((p) => p.id !== row.id);
+      const others = prev.filter((p) => p.id !== row.id);
+      const next =
+        payload.eventType === "INSERT" || (row as Alert).status === "active"
+          ? [row as Alert, ...others]
+          : others;
+      return next.slice(0, 20);
+    },
+  });
 
   async function broadcast(label: string, severity: string) {
-    if (!user) {
-      toast.error("Sign in to broadcast a real SOS.");
-      return;
-    }
+    if (!requireAuth(user, "broadcast a real SOS")) return;
     setBusy(true);
     try {
       const { error } = await supabase.from("sos_alerts").insert({
@@ -139,11 +121,14 @@ function SosPage() {
           </Button>
           {!user && (
             <p className="text-xs text-muted-foreground">
-              <Link to="/auth" className="text-primary underline">Sign in</Link> to broadcast a verified SOS to your convoy.
+              <Link to="/auth" className="text-primary underline">
+                Sign in
+              </Link>{" "}
+              to broadcast a verified SOS to your convoy.
             </p>
           )}
           <div className="grid w-full gap-3 sm:grid-cols-3">
-            <Stat label="GPS lock" value={coords ? `${coords.lat.toFixed(3)}, ${coords.lng.toFixed(3)}` : "Awaiting…"} />
+            <Stat label="GPS lock" value={formatCoords(coords?.lat, coords?.lng) ?? "Awaiting…"} />
             <Stat label="Mesh relay" value="BT + WiFi-Direct" />
             <Stat label="Encryption" value="End-to-end" />
           </div>
@@ -161,16 +146,10 @@ function SosPage() {
                 onClick={() => broadcast(t.label, t.severity)}
                 className="flex cursor-pointer items-center gap-3 p-4 transition-all hover:border-primary/60"
               >
-                <div
-                  className={
-                    "flex h-10 w-10 items-center justify-center rounded-md " +
-                    (t.tone === "destructive"
-                      ? "bg-destructive/15 text-destructive"
-                      : "bg-primary/15 text-primary")
-                  }
-                >
-                  <t.icon className="h-5 w-5" />
-                </div>
+                <IconBox
+                  icon={t.icon}
+                  variant={t.tone === "destructive" ? "destructive" : "primary"}
+                />
                 <span className="text-sm font-medium">{t.label}</span>
               </Card>
             ))}
@@ -183,7 +162,9 @@ function SosPage() {
             Live active alerts
           </h3>
           {live.length === 0 ? (
-            <p className="mt-2 text-xs text-muted-foreground">No active emergencies on the network.</p>
+            <p className="mt-2 text-xs text-muted-foreground">
+              No active emergencies on the network.
+            </p>
           ) : (
             <ul className="mt-3 divide-y divide-border">
               {live.map((a) => (
@@ -191,11 +172,12 @@ function SosPage() {
                   <div className="min-w-0">
                     <p className="truncate font-medium">{a.message ?? "Emergency"}</p>
                     <p className="text-xs text-muted-foreground">
-                      {new Date(a.created_at).toLocaleTimeString()}
-                      {a.latitude && a.longitude ? ` • ${a.latitude.toFixed(3)}, ${a.longitude.toFixed(3)}` : ""}
+                      {formatTimestampWithCoords(a.created_at, a.latitude, a.longitude, "time")}
                     </p>
                   </div>
-                  <Badge variant="destructive" className="uppercase">{a.severity}</Badge>
+                  <Badge variant="destructive" className="uppercase">
+                    {a.severity}
+                  </Badge>
                 </li>
               ))}
             </ul>
@@ -207,10 +189,7 @@ function SosPage() {
             <ShieldAlert className="h-4 w-4 text-destructive" />
             Disclaimer
           </h3>
-          <p className="mt-2 text-xs text-muted-foreground">
-            AI guidance is informational only and must not replace professional emergency, rescue,
-            navigation, medical, or security services.
-          </p>
+          <p className="mt-2 text-xs text-muted-foreground">{AI_DISCLAIMER}</p>
         </Card>
       </div>
     </AppShell>
