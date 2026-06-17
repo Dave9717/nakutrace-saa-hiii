@@ -61,7 +61,9 @@ export const resolveAlert = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
-    const { error } = await context.supabase
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin
       .from("sos_alerts")
       .update({ status: "resolved", resolved_at: new Date().toISOString(), resolved_by: context.userId })
       .eq("id", data.id);
