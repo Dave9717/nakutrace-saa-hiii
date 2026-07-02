@@ -32,7 +32,10 @@ export function AppShell({
             </div>
             <div className="ml-auto flex items-center gap-2">
               {actions}
-              <Badge variant="outline" className="hidden gap-1 border-secondary/60 text-secondary-foreground sm:flex">
+              <Badge
+                variant="outline"
+                className="hidden gap-1 border-secondary/60 text-secondary-foreground sm:flex"
+              >
                 <WifiOff className="h-3 w-3" /> Offline ready
               </Badge>
               <Badge variant="outline" className="hidden gap-1 sm:flex">

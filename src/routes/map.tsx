@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/app-shell";
 import { MapCanvas } from "@/components/map-canvas";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,12 @@ import {
   Hospital,
   Shield,
   ShieldAlert,
+  RotateCcw,
+  Compass,
 } from "lucide-react";
+import { useGeolocation } from "@/hooks/use-geolocation";
+import { useMemo } from "react";
+import { formatCoords } from "@/lib/utils";
 
 export const Route = createFileRoute("/map")({
   head: () => ({ meta: [{ title: "Map — NAKUTRACE SAI" }] }),
@@ -40,6 +45,12 @@ const safety = [
 ];
 
 function MapPage() {
+  const coords = useGeolocation({ watch: true, enableHighAccuracy: true, maximumAge: 1000 });
+  const locationSummary = useMemo(() => {
+    if (!coords) return "Waiting for GPS…";
+    return formatCoords(coords.lat, coords.lng) ?? "GPS lock acquired";
+  }, [coords]);
+
   return (
     <AppShell title="Map" subtitle="Offline vector tiles · OSM">
       <div className="grid h-[calc(100vh-3.5rem)] gap-0 lg:grid-cols-[1fr_360px]">
@@ -54,21 +65,37 @@ function MapPage() {
               ))}
             </div>
           </div>
-          <Button
-            variant="destructive"
-            size="lg"
-            className="absolute bottom-6 right-6 gap-2 rounded-full px-5 shadow-xl"
-            style={{ boxShadow: "var(--shadow-elegant)" }}
-          >
-            <ShieldAlert className="h-5 w-5" /> SOS
-          </Button>
+          <div className="absolute bottom-6 right-6 flex flex-col gap-2">
+            <Button
+              variant="outline"
+              size="lg"
+              className="gap-2 rounded-full bg-card/90 px-4 shadow-lg"
+            >
+              <RotateCcw className="h-4 w-4" /> Refresh GPS
+            </Button>
+            <Button
+              asChild
+              variant="destructive"
+              size="lg"
+              className="gap-2 rounded-full px-5 shadow-xl"
+              style={{ boxShadow: "var(--shadow-elegant)" }}
+            >
+              <Link to="/sos">
+                <ShieldAlert className="h-5 w-5" /> SOS
+              </Link>
+            </Button>
+          </div>
         </div>
         <aside className="overflow-y-auto border-t border-border bg-card/40 p-4 lg:border-l lg:border-t-0">
           <Card className="p-4">
             <h3 className="text-sm font-semibold">Return to Safety</h3>
             <p className="mt-1 text-xs text-muted-foreground">
-              Don't worry — I'm here to guide you. Usitense bro.
+              Live GPS, heading, route history, and safe-point guidance are available even when
+              signal drops.
             </p>
+            <div className="mt-3 flex items-center gap-2 rounded-md border border-border bg-background/70 px-3 py-2 text-xs text-muted-foreground">
+              <Compass className="h-3.5 w-3.5 text-primary" /> {locationSummary}
+            </div>
             <Button className="mt-3 w-full gap-2">
               <Navigation className="h-4 w-4" /> Route to nearest safe point
             </Button>
@@ -103,6 +130,11 @@ function MapPage() {
               <Stat label="Fuel" value="~22 L" />
               <Stat label="Water" value="2 sources" />
               <Stat label="Safety" value="8.4 / 10" />
+            </div>
+            <div className="mt-4 rounded-md border border-border bg-background/60 p-3 text-xs text-muted-foreground">
+              <div className="font-medium text-foreground">Travel history</div>
+              <div className="mt-1">Last refresh: {locationSummary}</div>
+              <div className="mt-1">Route tracking: active · heading available when supported</div>
             </div>
           </Card>
         </aside>

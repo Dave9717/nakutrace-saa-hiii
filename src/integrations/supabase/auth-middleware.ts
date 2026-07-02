@@ -4,6 +4,12 @@ import { getRequest } from "@tanstack/react-start/server";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./types";
 
+type AuthContext = {
+  supabase: ReturnType<typeof createClient<Database>> | null;
+  userId: string | null;
+  claims: Record<string, unknown> | null;
+};
+
 export const requireSupabaseAuth = createMiddleware({ type: "function" }).server(
   async ({ next }) => {
     const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -11,7 +17,8 @@ export const requireSupabaseAuth = createMiddleware({ type: "function" }).server
 
     if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
       console.warn("[Supabase] Auth middleware is disabled because Supabase env vars are missing.");
-      return next({ context: { supabase: null, userId: null, claims: null } });
+      const fallbackContext: AuthContext = { supabase: null, userId: null, claims: null };
+      return next({ context: fallbackContext });
     }
 
     const request = getRequest();
@@ -57,12 +64,14 @@ export const requireSupabaseAuth = createMiddleware({ type: "function" }).server
       throw new Error("Unauthorized: No user ID found in token");
     }
 
+    const authContext: AuthContext = {
+      supabase,
+      userId: data.claims.sub,
+      claims: data.claims,
+    };
+
     return next({
-      context: {
-        supabase,
-        userId: data.claims.sub,
-        claims: data.claims,
-      },
+      context: authContext,
     });
   },
 );

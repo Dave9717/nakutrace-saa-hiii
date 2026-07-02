@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, Send, Cloud, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { askAssistant } from "@/lib/ai.functions";
 import { toast } from "sonner";
-import { AI_DISCLAIMER } from "@/lib/utils";
+import { AI_DISCLAIMER, getAssistantFallbackReply } from "@/lib/utils";
 
 export const Route = createFileRoute("/ai-assistant")({
   head: () => ({ meta: [{ title: "Offline AI Assistant — NAKUTRACE SAI" }] }),
@@ -27,6 +27,7 @@ function AIPage() {
   const ask = useServerFn(askAssistant);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
   const [messages, setMessages] = useState<{ role: "user" | "assistant"; content: string }[]>([
     {
       role: "assistant",
@@ -35,7 +36,7 @@ function AIPage() {
     },
   ]);
 
-  async function send(text: string) {
+  async function send(text: string, attempt = 0) {
     if (!text.trim() || busy) return;
     const next = [...messages, { role: "user" as const, content: text.trim() }];
     setMessages(next);
@@ -43,14 +44,27 @@ function AIPage() {
     setBusy(true);
     try {
       const { reply, error } = await ask({ data: { messages: next } });
-      if (error) toast.error(reply);
-      setMessages([...next, { role: "assistant", content: reply }]);
+      const assistantReply = error ? reply || getAssistantFallbackReply(text) : reply;
+      setMessages([...next, { role: "assistant", content: assistantReply }]);
+      if (error) {
+        toast.error("AI gateway unavailable — using offline guidance.");
+      }
+      if (attempt === 0) {
+        setRetryCount((value) => value + 1);
+      }
     } catch (e) {
-      toast.error("AI request failed — check connection.");
+      const fallback = getAssistantFallbackReply(text);
+      setMessages([...next, { role: "assistant", content: fallback }]);
+      toast.error("AI request failed — offline guidance applied.");
     } finally {
       setBusy(false);
     }
   }
+
+  const statusLabel = useMemo(() => {
+    if (retryCount > 0) return "Fallback guidance active";
+    return "Live";
+  }, [retryCount]);
 
   return (
     <AppShell
@@ -63,7 +77,7 @@ function AIPage() {
             <Sparkles className="h-5 w-5 text-primary" />
             <h2 className="text-lg font-semibold">Ask the field assistant</h2>
             <Badge variant="outline" className="ml-auto gap-1">
-              <Cloud className="h-3 w-3" /> Live
+              <Cloud className="h-3 w-3" /> {statusLabel}
             </Badge>
           </div>
           <p className="mt-1 text-sm text-muted-foreground">

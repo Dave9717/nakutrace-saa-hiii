@@ -87,8 +87,9 @@ function SosPage() {
       });
       if (error) throw error;
       toast.success("SOS broadcast — convoy & guardians notified.");
-    } catch (e: any) {
-      toast.error(e.message ?? "Broadcast failed");
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "Broadcast failed";
+      toast.error(message);
     } finally {
       setBusy(false);
     }

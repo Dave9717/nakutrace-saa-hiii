@@ -66,6 +66,10 @@ const packs = [
 ];
 const TOTAL_MB = 8192;
 
+type DownloadRow = {
+  pack_slug: string;
+};
+
 function PacksPage() {
   const { user } = useAuth();
   const [installed, setInstalled] = useState<Set<string>>(new Set());
@@ -80,7 +84,9 @@ function PacksPage() {
       .from("knowledge_pack_downloads")
       .select("pack_slug")
       .then(({ data }) => {
-        setInstalled(new Set((data ?? []).map((d: any) => d.pack_slug)));
+        setInstalled(
+          new Set((data as DownloadRow[] | null | undefined)?.map((d) => d.pack_slug) ?? []),
+        );
       });
   }, [user]);
 

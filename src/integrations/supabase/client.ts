@@ -19,7 +19,9 @@ function createFallbackSupabaseClient(): SupabaseClient {
   return {
     auth,
     from: () => {
-      throw new Error("Supabase client is not configured. Set the Supabase environment variables to enable auth and database access.");
+      throw new Error(
+        "Supabase client is not configured. Set the Supabase environment variables to enable auth and database access.",
+      );
     },
   } as unknown as SupabaseClient;
 }
@@ -53,4 +55,3 @@ export const supabase = new Proxy({} as SupabaseClient, {
     return Reflect.get(_supabase, prop, receiver);
   },
 });
-

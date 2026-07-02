@@ -10,7 +10,9 @@ type SupabaseAdminClient = ReturnType<typeof createClient<Database>>;
 function createFallbackSupabaseAdminClient(): SupabaseAdminClient {
   return {
     from: () => {
-      throw new Error("Supabase admin client is not configured. Set the server-side Supabase environment variables to enable admin operations.");
+      throw new Error(
+        "Supabase admin client is not configured. Set the server-side Supabase environment variables to enable admin operations.",
+      );
     },
   } as unknown as SupabaseAdminClient;
 }
@@ -20,7 +22,9 @@ function createSupabaseAdminClient(): SupabaseAdminClient {
   const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
-    console.warn("[Supabase] Missing server-side environment variables; using a safe fallback admin client.");
+    console.warn(
+      "[Supabase] Missing server-side environment variables; using a safe fallback admin client.",
+    );
     return createFallbackSupabaseAdminClient();
   }
 

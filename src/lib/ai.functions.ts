@@ -16,7 +16,7 @@ const Schema = z.object({
 const SYSTEM = `You are the NAKUTRACE SAI field assistant — an offline-first survival, navigation, safari and emergency guide for Africa and remote environments. Be calm, concise, practical. Give numbered steps in emergencies. Always remind users that AI is informational and never replaces professional emergency services. Use kilometers, litres, Celsius.`;
 
 export const askAssistant = createServerFn({ method: "POST" })
-  .inputValidator((input) => Schema.parse(input))
+  .validator((input) => Schema.parse(input))
   .handler(async ({ data }) => {
     const apiKey = process.env.LOVABLE_API_KEY;
     if (!apiKey) {
@@ -42,12 +42,18 @@ export const askAssistant = createServerFn({ method: "POST" })
       return { reply: "Rate limit reached — try again shortly.", error: "rate_limit" as const };
     }
     if (res.status === 402) {
-      return { reply: "AI credits exhausted. Please top up Lovable AI.", error: "credits" as const };
+      return {
+        reply: "AI credits exhausted. Please top up Lovable AI.",
+        error: "credits" as const,
+      };
     }
     if (!res.ok) {
       const text = await res.text();
       console.error("AI gateway error", res.status, text);
-      return { reply: "The AI gateway is temporarily unavailable. Please try again later.", error: "gateway_error" as const };
+      return {
+        reply: "The AI gateway is temporarily unavailable. Please try again later.",
+        error: "gateway_error" as const,
+      };
     }
     const json = await res.json();
     const reply: string = json?.choices?.[0]?.message?.content ?? "(no response)";

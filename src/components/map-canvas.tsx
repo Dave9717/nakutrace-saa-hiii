@@ -1,5 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
+import { useGeolocation } from "@/hooks/use-geolocation";
 
 export function MapCanvas({
   center = [37.5, 0.5] as [number, number],
@@ -11,6 +12,14 @@ export function MapCanvas({
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const coords = useGeolocation({ watch: true, enableHighAccuracy: true, maximumAge: 1000 });
+  const [mapInstance, setMapInstance] = useState<maplibregl.Map | null>(null);
+
+  const position = useMemo<[number, number]>(() => {
+    if (coords) return [coords.lng, coords.lat];
+    return center;
+  }, [center, coords]);
+
   useEffect(() => {
     if (!ref.current) return;
     const map = new maplibregl.Map({
@@ -27,12 +36,33 @@ export function MapCanvas({
         },
         layers: [{ id: "osm", type: "raster", source: "osm" }],
       },
-      center,
+      center: position,
       zoom,
       attributionControl: false,
     });
     map.addControl(new maplibregl.NavigationControl({ showCompass: true }), "top-right");
-    return () => map.remove();
-  }, [center, zoom]);
+    setMapInstance(map);
+    return () => {
+      map.remove();
+      setMapInstance(null);
+    };
+  }, [position[0], position[1], zoom]);
+
+  useEffect(() => {
+    if (!mapInstance || !coords) return;
+    mapInstance.flyTo({
+      center: [coords.lng, coords.lat],
+      zoom: Math.max(mapInstance.getZoom(), 12),
+    });
+
+    const marker = new maplibregl.Marker({ color: "#0f766e" })
+      .setLngLat([coords.lng, coords.lat])
+      .addTo(mapInstance);
+
+    return () => {
+      marker.remove();
+    };
+  }, [coords, mapInstance]);
+
   return <div ref={ref} className={className} />;
 }
