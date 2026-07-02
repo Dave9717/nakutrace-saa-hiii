@@ -63,56 +63,61 @@
 
 :root {
   --radius: 0.5rem;
-  /* NAKUTRACE SAI — Safari executive palette */
-  --background: oklch(0.18 0.025 175);
-  --foreground: oklch(0.96 0.015 85);
-  --card: oklch(0.22 0.03 175);
-  --card-foreground: oklch(0.96 0.015 85);
-  --popover: oklch(0.22 0.03 175);
-  --popover-foreground: oklch(0.96 0.015 85);
+  /* NAKUTRACE — Wildlife premium palette (dark by default) */
+  --background: oklch(0.16 0.02 155);
+  --foreground: oklch(0.97 0.015 85);
+  --card: oklch(0.22 0.03 155);
+  --card-foreground: oklch(0.97 0.015 85);
+  --popover: oklch(0.20 0.03 155);
+  --popover-foreground: oklch(0.97 0.015 85);
+  /* Emerald / Forest primary */
+  --primary: oklch(0.62 0.15 152);
+  --primary-foreground: oklch(0.99 0.005 85);
   /* Safari Gold */
-  --primary: oklch(0.76 0.14 78);
-  --primary-foreground: oklch(0.18 0.025 175);
-  /* Deep Savannah Green */
-  --secondary: oklch(0.36 0.06 155);
-  --secondary-foreground: oklch(0.96 0.015 85);
-  --muted: oklch(0.26 0.025 175);
-  --muted-foreground: oklch(0.72 0.02 85);
-  /* Burnt Orange */
-  --accent: oklch(0.62 0.16 45);
-  --accent-foreground: oklch(0.98 0.01 85);
-  /* Emergency Red */
+  --secondary: oklch(0.78 0.14 82);
+  --secondary-foreground: oklch(0.18 0.03 155);
+  --muted: oklch(0.26 0.025 155);
+  --muted-foreground: oklch(0.74 0.02 85);
+  /* Sunset Orange */
+  --accent: oklch(0.68 0.18 55);
+  --accent-foreground: oklch(0.99 0.005 85);
   --destructive: oklch(0.58 0.23 22);
-  --destructive-foreground: oklch(0.98 0.01 85);
-  --border: oklch(0.32 0.03 165 / 60%);
-  --input: oklch(0.28 0.03 165);
-  --ring: oklch(0.76 0.14 78);
+  --destructive-foreground: oklch(0.99 0.005 85);
+  --border: oklch(0.35 0.03 155 / 55%);
+  --input: oklch(0.28 0.03 155);
+  --ring: oklch(0.62 0.15 152);
   --chart-1: oklch(0.76 0.14 78);
   --chart-2: oklch(0.55 0.12 155);
   --chart-3: oklch(0.62 0.16 45);
   --chart-4: oklch(0.58 0.23 22);
   --chart-5: oklch(0.70 0.08 200);
-  --sidebar: oklch(0.15 0.025 175);
-  --sidebar-foreground: oklch(0.92 0.015 85);
-  --sidebar-primary: oklch(0.76 0.14 78);
-  --sidebar-primary-foreground: oklch(0.18 0.025 175);
-  --sidebar-accent: oklch(0.26 0.04 165);
-  --sidebar-accent-foreground: oklch(0.96 0.015 85);
-  --sidebar-border: oklch(0.30 0.03 165 / 60%);
-  --sidebar-ring: oklch(0.76 0.14 78);
+  --sidebar: oklch(0.13 0.02 155 / 85%);
+  --sidebar-foreground: oklch(0.93 0.015 85);
+  --sidebar-primary: oklch(0.62 0.15 152);
+  --sidebar-primary-foreground: oklch(0.99 0.005 85);
+  --sidebar-accent: oklch(0.24 0.04 155);
+  --sidebar-accent-foreground: oklch(0.97 0.015 85);
+  --sidebar-border: oklch(0.32 0.03 155 / 55%);
+  --sidebar-ring: oklch(0.62 0.15 152);
 
   /* Brand tokens */
-  --savannah: oklch(0.36 0.06 155);
-  --gold: oklch(0.76 0.14 78);
-  --burnt: oklch(0.62 0.16 45);
-  --emergency: oklch(0.58 0.23 22);
-  --gradient-savannah: linear-gradient(135deg, oklch(0.22 0.03 175), oklch(0.30 0.05 155));
-  --gradient-gold: linear-gradient(135deg, oklch(0.76 0.14 78), oklch(0.62 0.16 45));
-  --gradient-hero: radial-gradient(at 20% 10%, oklch(0.30 0.05 155 / 60%), transparent 60%),
-                   radial-gradient(at 80% 80%, oklch(0.62 0.16 45 / 35%), transparent 55%),
-                   linear-gradient(180deg, oklch(0.16 0.025 175), oklch(0.20 0.03 175));
-  --shadow-elegant: 0 20px 60px -20px oklch(0 0 0 / 60%);
-  --shadow-gold: 0 10px 40px -10px oklch(0.76 0.14 78 / 45%);
+  --forest: oklch(0.36 0.08 152);
+  --emerald: oklch(0.62 0.15 152);
+  --gold: oklch(0.78 0.14 82);
+  --sunset: oklch(0.68 0.18 55);
+  --earth: oklch(0.42 0.07 55);
+  --sand: oklch(0.92 0.05 82);
+  --gradient-forest: linear-gradient(135deg, oklch(0.36 0.08 152), oklch(0.62 0.15 152));
+  --gradient-sunset: linear-gradient(135deg, oklch(0.78 0.14 82), oklch(0.68 0.18 55));
+  --gradient-hero:
+    radial-gradient(at 15% 10%, oklch(0.55 0.14 152 / 45%), transparent 55%),
+    radial-gradient(at 85% 85%, oklch(0.68 0.18 55 / 35%), transparent 55%),
+    radial-gradient(at 50% 100%, oklch(0.30 0.05 152 / 60%), transparent 70%),
+    linear-gradient(180deg, oklch(0.14 0.02 155), oklch(0.18 0.03 155));
+  --shadow-elegant: 0 24px 60px -20px oklch(0 0 0 / 55%);
+  --shadow-gold: 0 10px 40px -12px oklch(0.78 0.14 82 / 45%);
+  --shadow-glass: 0 12px 40px -12px oklch(0 0 0 / 45%), inset 0 1px 0 oklch(1 0 0 / 8%);
+  --shadow-glow: 0 0 40px -8px oklch(0.62 0.15 152 / 55%);
 }
 
 .dark {
