@@ -1,0 +1,20 @@
+# NAKUTRACE SAI
+
+> Africa-first offline navigation, survival, and wildlife exploration platform. Built for the savannah — works without signal.
+
+NAKUTRACE SAI is a progressive web app designed for safari guides, rangers, expedition teams, and wildlife enthusiasts operating in remote African terrain. It combines offline-first maps, real-time SOS alerting, convoy coordination, community-driven field reporting, and an AI survival assistant with specialized knowledge packs (snakebite, first aid, tracking, bushcraft). The platform is engineered to function fully without internet connectivity, using device GPS, local caching, and mesh-style communication where available.
+
+## Pages
+
+- [Home](/): Discover the platform — hero showcase, quick actions, and mode selection.
+- [Map](/map): Interactive offline-capable map with GPS centering, live SOS pins, community reports, and wildlife-themed markers.
+- [Safari Explorer](/safari): Wildlife guide with high-quality photography, habitat details, conservation status, and field facts for Africa's iconic species.
+- [Expedition](/expedition): Plan and manage multi-day expeditions with waypoint tracking, team check-ins, and route logging.
+- [Convoy](/convoy): Real-time convoy coordination with live chat, member management, and QR/code-based join flows.
+- [SOS](/sos): Emergency alert system with 142-hour GPS pinning, status broadcasting, and direct response coordination.
+- [Survival](/survival): Offline survival mode with essential tools, checklists, and environment-specific guidance.
+- [Guardian](/guardian): Trusted contact management and persistent safety check-ins with automated GPS logging.
+- [Community](/community): Community-driven field reports — post, verify, and explore crowd-sourced mapping data.
+- [Events](/events): Upcoming safaris, conservation drives, ranger meetups, and training workshops.
+- [AI Assistant](/ai-assistant): Conversational AI for survival advice, wildlife identification, and expedition planning — works offline with cached knowledge.
+- [Knowledge Packs](/knowledge-packs): Installable offline guides covering snakebite response, first aid, tracking signs, and bushcraft essentials.
