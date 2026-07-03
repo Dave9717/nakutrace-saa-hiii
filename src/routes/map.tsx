@@ -19,7 +19,20 @@ import {
 } from "lucide-react";
 
 export const Route = createFileRoute("/map")({
-  head: () => ({ meta: [{ title: "Map — NAKUTRACE SAI" }] }),
+  head: () => ({
+    meta: [
+      { title: "Offline Map — NAKUTRACE SAI" },
+      { name: "description", content: "Vector-tile offline maps with live SOS pins, community reports and GPS routing." },
+      { property: "og:title", content: "Offline Map — NAKUTRACE SAI" },
+      { property: "og:description", content: "Vector-tile offline maps with live SOS pins, community reports and GPS routing." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://savannah-guide-ai.lovable.app/map" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Offline Map — NAKUTRACE SAI" },
+      { name: "twitter:description", content: "Vector-tile offline maps with live SOS pins, community reports and GPS routing." },
+    ],
+    links: [{ rel: "canonical", href: "https://savannah-guide-ai.lovable.app/map" }],
+  }),
   component: MapPage,
 });
 

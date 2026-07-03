@@ -13,7 +13,20 @@ import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/community")({
-  head: () => ({ meta: [{ title: "Community Mapping — NAKUTRACE SAI" }] }),
+  head: () => ({
+    meta: [
+      { title: "Community Mapping — NAKUTRACE SAI" },
+      { name: "description", content: "Post and verify field reports — hazards, wildlife, road conditions — from the community." },
+      { property: "og:title", content: "Community Mapping — NAKUTRACE SAI" },
+      { property: "og:description", content: "Post and verify field reports — hazards, wildlife, road conditions — from the community." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://savannah-guide-ai.lovable.app/community" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Community Mapping — NAKUTRACE SAI" },
+      { name: "twitter:description", content: "Post and verify field reports — hazards, wildlife, road conditions — from the community." },
+    ],
+    links: [{ rel: "canonical", href: "https://savannah-guide-ai.lovable.app/community" }],
+  }),
   component: CommunityPage,
 });
 

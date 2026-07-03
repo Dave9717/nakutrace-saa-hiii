@@ -26,7 +26,20 @@ import {
 } from "lucide-react";
 
 export const Route = createFileRoute("/knowledge-packs")({
-  head: () => ({ meta: [{ title: "Knowledge Packs — NAKUTRACE SAI" }] }),
+  head: () => ({
+    meta: [
+      { title: "Knowledge Packs — NAKUTRACE SAI" },
+      { name: "description", content: "Offline survival playbooks: snakebite, first aid, navigation, water sourcing and more." },
+      { property: "og:title", content: "Knowledge Packs — NAKUTRACE SAI" },
+      { property: "og:description", content: "Offline survival playbooks: snakebite, first aid, navigation, water sourcing and more." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://savannah-guide-ai.lovable.app/knowledge-packs" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Knowledge Packs — NAKUTRACE SAI" },
+      { name: "twitter:description", content: "Offline survival playbooks: snakebite, first aid, navigation, water sourcing and more." },
+    ],
+    links: [{ rel: "canonical", href: "https://savannah-guide-ai.lovable.app/knowledge-packs" }],
+  }),
   component: PacksPage,
 });
 

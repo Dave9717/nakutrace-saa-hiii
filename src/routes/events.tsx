@@ -3,7 +3,20 @@ import { FeaturePage } from "@/components/feature-page";
 import { Calendar, Tent, Trophy, Leaf, Users, Camera } from "lucide-react";
 
 export const Route = createFileRoute("/events")({
-  head: () => ({ meta: [{ title: "Events — NAKUTRACE SAI" }] }),
+  head: () => ({
+    meta: [
+      { title: "Events — NAKUTRACE SAI" },
+      { name: "description", content: "Ranger patrols, safari meetups and coordinated expedition events." },
+      { property: "og:title", content: "Events — NAKUTRACE SAI" },
+      { property: "og:description", content: "Ranger patrols, safari meetups and coordinated expedition events." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://savannah-guide-ai.lovable.app/events" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Events — NAKUTRACE SAI" },
+      { name: "twitter:description", content: "Ranger patrols, safari meetups and coordinated expedition events." },
+    ],
+    links: [{ rel: "canonical", href: "https://savannah-guide-ai.lovable.app/events" }],
+  }),
   component: () => (
     <FeaturePage
       title="Events"

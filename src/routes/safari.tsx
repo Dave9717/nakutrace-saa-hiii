@@ -11,7 +11,20 @@ import rhino from "@/assets/animals/rhino.jpg";
 import cheetah from "@/assets/animals/cheetah.jpg";
 
 export const Route = createFileRoute("/safari")({
-  head: () => ({ meta: [{ title: "Safari Explorer — NAKUTRACE SAI" }] }),
+  head: () => ({
+    meta: [
+      { title: "Safari Explorer — NAKUTRACE SAI" },
+      { name: "description", content: "Wildlife sightings, habitats, migration corridors and conservation facts for African safaris." },
+      { property: "og:title", content: "Safari Explorer — NAKUTRACE SAI" },
+      { property: "og:description", content: "Wildlife sightings, habitats, migration corridors and conservation facts for African safaris." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://savannah-guide-ai.lovable.app/safari" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Safari Explorer — NAKUTRACE SAI" },
+      { name: "twitter:description", content: "Wildlife sightings, habitats, migration corridors and conservation facts for African safaris." },
+    ],
+    links: [{ rel: "canonical", href: "https://savannah-guide-ai.lovable.app/safari" }],
+  }),
   component: SafariPage,
 });
 

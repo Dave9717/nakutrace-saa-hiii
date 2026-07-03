@@ -22,7 +22,20 @@ import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/sos")({
-  head: () => ({ meta: [{ title: "SOS & Rescue — NAKUTRACE SAI" }] }),
+  head: () => ({
+    meta: [
+      { title: "SOS & Rescue — NAKUTRACE SAI" },
+      { name: "description", content: "Trigger mesh-broadcast emergencies with 142hr GPS pinning and live rescue coordination." },
+      { property: "og:title", content: "SOS & Rescue — NAKUTRACE SAI" },
+      { property: "og:description", content: "Trigger mesh-broadcast emergencies with 142hr GPS pinning and live rescue coordination." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://savannah-guide-ai.lovable.app/sos" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "SOS & Rescue — NAKUTRACE SAI" },
+      { name: "twitter:description", content: "Trigger mesh-broadcast emergencies with 142hr GPS pinning and live rescue coordination." },
+    ],
+    links: [{ rel: "canonical", href: "https://savannah-guide-ai.lovable.app/sos" }],
+  }),
   component: SosPage,
 });
 
