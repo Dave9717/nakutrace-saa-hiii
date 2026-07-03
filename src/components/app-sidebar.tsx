@@ -28,6 +28,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import logoImg from "@/assets/logo.png";
 
 const primary = [
   { title: "Home", url: "/", icon: Home },
@@ -85,9 +86,13 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border px-3 py-4">
         <Link to="/" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground font-bold">
-            N
-          </div>
+          <img
+            src={logoImg}
+            alt="NAKUTRACE SAI"
+            width={40}
+            height={40}
+            className="h-9 w-9 shrink-0 rounded-full object-contain drop-shadow-[0_2px_10px_rgba(212,160,23,0.35)]"
+          />
           {!collapsed && (
             <div className="flex flex-col leading-tight">
               <span className="text-sm font-bold tracking-wide text-sidebar-foreground">
