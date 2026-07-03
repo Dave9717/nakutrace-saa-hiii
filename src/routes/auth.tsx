@@ -96,7 +96,7 @@ function AuthPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-hero px-4">
       <Link to="/" className="mb-8 flex items-center gap-3 text-foreground">
-        <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary text-primary-foreground font-bold">
+        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/95 text-primary-foreground font-bold shadow-lg">
           N
         </div>
         <div className="flex flex-col leading-tight">
@@ -104,7 +104,7 @@ function AuthPage() {
           <span className="text-[10px] uppercase tracking-[0.25em] text-primary">SAI</span>
         </div>
       </Link>
-      <Card className="w-full max-w-md p-6">
+      <Card className="glass-panel w-full max-w-md p-6">
         <div className="mb-6 text-center">
           <Compass className="mx-auto h-8 w-8 text-primary" />
           <h1 className="mt-2 text-xl font-semibold">Access the field console</h1>

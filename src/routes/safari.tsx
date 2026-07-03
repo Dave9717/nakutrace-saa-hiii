@@ -111,7 +111,7 @@ function SafariPage() {
                 "Cool forests, waterfalls, and low-light photography routes.",
               ],
             ].map(([title, desc]) => (
-              <div key={title} className="rounded-lg border border-border bg-background/60 p-3">
+              <div key={title} className="glass-surface p-3">
                 <div className="font-medium">{title}</div>
                 <p className="mt-1 text-sm text-muted-foreground">{desc}</p>
               </div>

@@ -199,7 +199,7 @@ function SosPage() {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-md border border-border bg-card/40 p-3">
+    <div className="glass-surface p-3">
       <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</div>
       <div className="text-sm font-semibold">{value}</div>
     </div>

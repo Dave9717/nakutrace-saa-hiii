@@ -91,10 +91,10 @@ function AIPage() {
                 <div
                   key={i}
                   className={
-                    "rounded-lg border p-4 " +
+                    "glass-surface p-4 transition-all duration-200 " +
                     (m.role === "assistant"
-                      ? "border-border bg-card/40"
-                      : "border-primary/30 bg-primary/5")
+                      ? "border-border bg-card/70"
+                      : "border-primary/30 bg-primary/10 shadow-lg")
                   }
                 >
                   <div className="text-xs font-semibold uppercase tracking-wider text-primary">

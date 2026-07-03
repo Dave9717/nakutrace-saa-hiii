@@ -96,7 +96,7 @@ function Index() {
         style={{ background: "var(--gradient-hero)" }}
       >
         <div className="mx-auto max-w-6xl px-6 py-16 md:py-24">
-          <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.2em] text-primary">
+          <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10/90 px-3 py-1 text-xs font-medium uppercase tracking-[0.2em] text-primary shadow-sm shadow-primary/20 backdrop-blur-sm">
             <WifiOff className="h-3 w-3" /> Offline-first · Africa-built
           </div>
           <h1 className="mt-6 max-w-3xl text-4xl font-bold leading-tight tracking-tight md:text-6xl">
@@ -137,7 +137,7 @@ function Index() {
               ["100%", "Works offline"],
               ["1-tap", "Return to safety"],
             ].map(([v, l]) => (
-              <div key={l} className="rounded-lg border border-border bg-card/60 p-4 backdrop-blur">
+              <div key={l} className="glass-panel p-4">
                 <div className="text-2xl font-bold text-primary">{v}</div>
                 <div className="mt-1 text-xs uppercase tracking-wider text-muted-foreground">
                   {l}
@@ -169,7 +169,7 @@ function Index() {
         </div>
       </section>
 
-      <section className="border-t border-border bg-card/30">
+      <section className="glass-surface border-t border-border">
         <div className="mx-auto max-w-6xl px-6 py-10">
           <Card className="border-primary/30 bg-card/60 p-6 md:p-8">
             <h3 className="text-lg font-semibold">Download once. Stay prepared.</h3>

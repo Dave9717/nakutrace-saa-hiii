@@ -240,8 +240,8 @@ function ConvoyPage() {
                     <button
                       onClick={() => setActiveId(c.id)}
                       className={
-                        "w-full rounded-md px-3 py-2 text-left text-sm transition " +
-                        (activeId === c.id ? "bg-primary/15 text-primary" : "hover:bg-muted")
+                        "w-full rounded-2xl px-3 py-2 text-left text-sm transition " +
+                        (activeId === c.id ? "bg-primary/15 text-primary" : "hover:bg-background/70")
                       }
                     >
                       <div className="font-medium">{c.name}</div>
@@ -316,8 +316,8 @@ function ConvoyPage() {
                         >
                           <div
                             className={
-                              "max-w-[80%] rounded-lg px-3 py-2 text-sm " +
-                              (mine ? "bg-primary text-primary-foreground" : "bg-muted")
+                              "max-w-[80%] rounded-2xl px-3 py-2 text-sm " +
+                              (mine ? "bg-primary text-primary-foreground shadow-xl" : "glass-surface")
                             }
                           >
                             <div className="text-[10px] uppercase tracking-wider opacity-70">
