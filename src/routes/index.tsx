@@ -16,6 +16,7 @@ import {
   Search,
 } from "lucide-react";
 import heroImg from "@/assets/hero-savannah.jpg";
+import logoImg from "@/assets/logo.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -65,11 +66,27 @@ function Index() {
             className="absolute inset-0"
             style={{ background: "var(--gradient-hero)", mixBlendMode: "soft-light" }}
           />
+          {/* Logo watermark */}
+          <img
+            src={logoImg}
+            alt=""
+            aria-hidden
+            className="pointer-events-none absolute -right-24 -top-16 w-[540px] max-w-[70vw] rotate-[8deg] opacity-[0.14] mix-blend-screen md:opacity-[0.18]"
+          />
         </div>
 
         <div className="mx-auto max-w-6xl px-6 pb-16 pt-14 md:pb-24 md:pt-24">
-          <div className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.2em] text-primary backdrop-blur">
-            <WifiOff className="h-3 w-3" /> Offline-first · Africa-built
+          <div className="flex items-center gap-4">
+            <img
+              src={logoImg}
+              alt="NAKUTRACE SAI emblem"
+              width={96}
+              height={96}
+              className="h-20 w-20 shrink-0 rounded-full object-contain drop-shadow-[0_10px_30px_rgba(212,160,23,0.35)] md:h-24 md:w-24"
+            />
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.2em] text-primary backdrop-blur">
+              <WifiOff className="h-3 w-3" /> Offline-first · Africa-built
+            </div>
           </div>
           <h1 className="mt-6 max-w-3xl font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
             Navigate. Survive.{" "}
