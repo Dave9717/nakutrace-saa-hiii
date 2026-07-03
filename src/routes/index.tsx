@@ -32,7 +32,13 @@ export const Route = createFileRoute("/")({
         property: "og:description",
         content: "Navigate. Survive. Explore. Offline-first survival navigation for Africa.",
       },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://savannah-guide-ai.lovable.app/" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "NAKUTRACE SAI — Navigate. Survive. Explore." },
+      { name: "twitter:description", content: "Offline-first navigation, survival, safari and emergency response built for Africa." },
     ],
+    links: [{ rel: "canonical", href: "https://savannah-guide-ai.lovable.app/" }],
   }),
   component: Index,
 });

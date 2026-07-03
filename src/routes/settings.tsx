@@ -5,7 +5,20 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 
 export const Route = createFileRoute("/settings")({
-  head: () => ({ meta: [{ title: "Settings — NAKUTRACE SAI" }] }),
+  head: () => ({
+    meta: [
+      { title: "Settings — NAKUTRACE SAI" },
+      { name: "description", content: "Manage your NAKUTRACE SAI profile, call sign, notifications and offline preferences." },
+      { property: "og:title", content: "Settings — NAKUTRACE SAI" },
+      { property: "og:description", content: "Manage your NAKUTRACE SAI profile, call sign, notifications and offline preferences." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://savannah-guide-ai.lovable.app/settings" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Settings — NAKUTRACE SAI" },
+      { name: "twitter:description", content: "Manage your NAKUTRACE SAI profile, call sign, notifications and offline preferences." },
+    ],
+    links: [{ rel: "canonical", href: "https://savannah-guide-ai.lovable.app/settings" }],
+  }),
   component: SettingsPage,
 });
 

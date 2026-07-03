@@ -11,7 +11,20 @@ import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/convoy")({
-  head: () => ({ meta: [{ title: "Convoy Mode — NAKUTRACE SAI" }] }),
+  head: () => ({
+    meta: [
+      { title: "Convoy Mode — NAKUTRACE SAI" },
+      { name: "description", content: "Live convoy tracking, separation alerts, group SOS and encrypted mesh chat." },
+      { property: "og:title", content: "Convoy Mode — NAKUTRACE SAI" },
+      { property: "og:description", content: "Live convoy tracking, separation alerts, group SOS and encrypted mesh chat." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://savannah-guide-ai.lovable.app/convoy" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Convoy Mode — NAKUTRACE SAI" },
+      { name: "twitter:description", content: "Live convoy tracking, separation alerts, group SOS and encrypted mesh chat." },
+    ],
+    links: [{ rel: "canonical", href: "https://savannah-guide-ai.lovable.app/convoy" }],
+  }),
   component: ConvoyPage,
 });
 

@@ -11,7 +11,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 
 export const Route = createFileRoute("/ai-assistant")({
-  head: () => ({ meta: [{ title: "Offline AI Assistant — NAKUTRACE SAI" }] }),
+  head: () => ({
+    meta: [
+      { title: "Offline AI Assistant — NAKUTRACE SAI" },
+      { name: "description", content: "Field-ready AI guidance for survival, navigation and safari questions — works with graceful offline fallbacks." },
+      { property: "og:title", content: "Offline AI Assistant — NAKUTRACE SAI" },
+      { property: "og:description", content: "Field-ready AI guidance for survival, navigation and safari questions — works with graceful offline fallbacks." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://savannah-guide-ai.lovable.app/ai-assistant" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Offline AI Assistant — NAKUTRACE SAI" },
+      { name: "twitter:description", content: "Field-ready AI guidance for survival, navigation and safari questions — works with graceful offline fallbacks." },
+    ],
+    links: [{ rel: "canonical", href: "https://savannah-guide-ai.lovable.app/ai-assistant" }],
+  }),
   component: AIPage,
 });
 

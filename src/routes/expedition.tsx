@@ -3,7 +3,20 @@ import { FeaturePage } from "@/components/feature-page";
 import { Compass, Navigation, Mountain, Users, ShieldAlert, CloudSun, Fuel, Sparkles, Radio } from "lucide-react";
 
 export const Route = createFileRoute("/expedition")({
-  head: () => ({ meta: [{ title: "Expedition Mode — NAKUTRACE SAI" }] }),
+  head: () => ({
+    meta: [
+      { title: "Expedition Mode — NAKUTRACE SAI" },
+      { name: "description", content: "Unified navigation, survival, convoy and SOS tools for multi-day expeditions." },
+      { property: "og:title", content: "Expedition Mode — NAKUTRACE SAI" },
+      { property: "og:description", content: "Unified navigation, survival, convoy and SOS tools for multi-day expeditions." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://savannah-guide-ai.lovable.app/expedition" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Expedition Mode — NAKUTRACE SAI" },
+      { name: "twitter:description", content: "Unified navigation, survival, convoy and SOS tools for multi-day expeditions." },
+    ],
+    links: [{ rel: "canonical", href: "https://savannah-guide-ai.lovable.app/expedition" }],
+  }),
   component: () => (
     <FeaturePage
       title="Expedition Mode"

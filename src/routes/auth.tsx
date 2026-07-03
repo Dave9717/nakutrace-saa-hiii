@@ -15,7 +15,14 @@ export const Route = createFileRoute("/auth")({
     meta: [
       { title: "Sign in — NAKUTRACE SAI" },
       { name: "description", content: "Sign in to NAKUTRACE SAI to access convoy coordination, SOS history and operator tools." },
+      { property: "og:title", content: "Sign in — NAKUTRACE SAI" },
+      { property: "og:description", content: "Sign in to NAKUTRACE SAI to access convoy coordination, SOS history and operator tools." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://savannah-guide-ai.lovable.app/auth" },
+      { name: "robots", content: "noindex" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://savannah-guide-ai.lovable.app/auth" }],
   }),
   component: AuthPage,
 });

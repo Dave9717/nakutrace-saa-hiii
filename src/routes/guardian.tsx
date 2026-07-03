@@ -11,7 +11,20 @@ import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/guardian")({
-  head: () => ({ meta: [{ title: "Guardian Mode — NAKUTRACE SAI" }] }),
+  head: () => ({
+    meta: [
+      { title: "Guardian Mode — NAKUTRACE SAI" },
+      { name: "description", content: "Trusted contacts, persistent safety check-ins and live GPS alerts for loved ones." },
+      { property: "og:title", content: "Guardian Mode — NAKUTRACE SAI" },
+      { property: "og:description", content: "Trusted contacts, persistent safety check-ins and live GPS alerts for loved ones." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://savannah-guide-ai.lovable.app/guardian" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Guardian Mode — NAKUTRACE SAI" },
+      { name: "twitter:description", content: "Trusted contacts, persistent safety check-ins and live GPS alerts for loved ones." },
+    ],
+    links: [{ rel: "canonical", href: "https://savannah-guide-ai.lovable.app/guardian" }],
+  }),
   component: GuardianPage,
 });
 
