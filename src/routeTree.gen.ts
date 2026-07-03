@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SurvivalRouteImport } from './routes/survival'
 import { Route as SosRouteImport } from './routes/sos'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SafariRouteImport } from './routes/safari'
 import { Route as MapRouteImport } from './routes/map'
@@ -35,6 +36,11 @@ const SurvivalRoute = SurvivalRouteImport.update({
 const SosRoute = SosRouteImport.update({
   id: '/sos',
   path: '/sos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -125,6 +131,7 @@ export interface FileRoutesByFullPath {
   '/map': typeof MapRoute
   '/safari': typeof SafariRoute
   '/settings': typeof SettingsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sos': typeof SosRoute
   '/survival': typeof SurvivalRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -143,6 +150,7 @@ export interface FileRoutesByTo {
   '/map': typeof MapRoute
   '/safari': typeof SafariRoute
   '/settings': typeof SettingsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sos': typeof SosRoute
   '/survival': typeof SurvivalRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -163,6 +171,7 @@ export interface FileRoutesById {
   '/map': typeof MapRoute
   '/safari': typeof SafariRoute
   '/settings': typeof SettingsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sos': typeof SosRoute
   '/survival': typeof SurvivalRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
@@ -183,6 +192,7 @@ export interface FileRouteTypes {
     | '/map'
     | '/safari'
     | '/settings'
+    | '/sitemap.xml'
     | '/sos'
     | '/survival'
     | '/admin'
@@ -201,6 +211,7 @@ export interface FileRouteTypes {
     | '/map'
     | '/safari'
     | '/settings'
+    | '/sitemap.xml'
     | '/sos'
     | '/survival'
     | '/admin'
@@ -220,6 +231,7 @@ export interface FileRouteTypes {
     | '/map'
     | '/safari'
     | '/settings'
+    | '/sitemap.xml'
     | '/sos'
     | '/survival'
     | '/_authenticated/admin'
@@ -240,6 +252,7 @@ export interface RootRouteChildren {
   MapRoute: typeof MapRoute
   SafariRoute: typeof SafariRoute
   SettingsRoute: typeof SettingsRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SosRoute: typeof SosRoute
   SurvivalRoute: typeof SurvivalRoute
 }
@@ -258,6 +271,13 @@ declare module '@tanstack/react-router' {
       path: '/sos'
       fullPath: '/sos'
       preLoaderRoute: typeof SosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -395,6 +415,7 @@ const rootRouteChildren: RootRouteChildren = {
   MapRoute: MapRoute,
   SafariRoute: SafariRoute,
   SettingsRoute: SettingsRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   SosRoute: SosRoute,
   SurvivalRoute: SurvivalRoute,
 }

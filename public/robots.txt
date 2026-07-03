@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://savannah-guide-ai.lovable.app/sitemap.xml
