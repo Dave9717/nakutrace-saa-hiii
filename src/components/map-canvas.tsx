@@ -4,6 +4,7 @@ import { RouteData, OfflineBoundary } from "@/lib/map-utils";
 
 /**
  * Run a style-mutating callback only once the MapLibre style is fully loaded.
+ * Safe against `Error: Style is not done loading` and against calls after unmount.
  */
 function whenStyleReady(map: maplibregl.Map, cb: () => void, disposedRef: { current: boolean }) {
   const run = () => {
