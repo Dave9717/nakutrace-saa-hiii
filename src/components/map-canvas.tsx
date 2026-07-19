@@ -2,6 +2,36 @@ import { useEffect, useRef, useState } from "react";
 import maplibregl, { type GeoJSONSourceSpecification } from "maplibre-gl";
 import { RouteData, OfflineBoundary } from "@/lib/map-utils";
 
+/**
+ * Run a style-mutating callback only once the MapLibre style is fully loaded.
+ */
+function whenStyleReady(map: maplibregl.Map, cb: () => void, disposedRef: { current: boolean }) {
+  const run = () => {
+    if (disposedRef.current) return;
+    try {
+      cb();
+    } catch (err) {
+      console.warn("[MapCanvas] style op failed:", err);
+    }
+  };
+  if (map.isStyleLoaded()) {
+    run();
+    return () => {};
+  }
+  const handler = () => {
+    if (!map.isStyleLoaded()) return;
+    map.off("load", handler);
+    map.off("styledata", handler);
+    run();
+  };
+  map.on("load", handler);
+  map.on("styledata", handler);
+  return () => {
+    map.off("load", handler);
+    map.off("styledata", handler);
+  };
+}
+
 export function MapCanvas({
   center = [37.5, 0.5] as [number, number],
   zoom = 5,
@@ -21,6 +51,8 @@ export function MapCanvas({
 
   useEffect(() => {
     if (!ref.current) return;
+    const disposedRef = { current: false };
+    const cleanups: Array<() => void> = [];
 
     const map = new maplibregl.Map({
       container: ref.current,
@@ -56,19 +88,49 @@ export function MapCanvas({
     };
 
     map.on("rotate", updateCompass);
+    cleanups.push(() => map.off("rotate", updateCompass));
 
-    // Offline cache boundary layer
+    // Swallow non-fatal runtime errors (tile 4xx, aborted requests) so they
+    // don't bubble to the React error boundary.
+    const onError = (e: { error?: Error }) => {
+      console.warn("[MapCanvas] runtime:", e?.error?.message ?? e);
+    };
+    map.on("error", onError);
+    cleanups.push(() => map.off("error", onError));
+
+    // Offline cache boundary layer — added only once style is ready
     if (offlineBoundary) {
-      addOfflineBoundary(map, offlineBoundary);
+      const off = whenStyleReady(
+        map,
+        () => {
+          addOfflineBoundary(map, offlineBoundary);
+        },
+        disposedRef,
+      );
+      cleanups.push(off);
     }
 
-    // Route rendering
+    // Route rendering — added only once style is ready
     if (routeData) {
-      addRouteLayer(map, routeData);
+      const off = whenStyleReady(
+        map,
+        () => {
+          addRouteLayer(map, routeData);
+        },
+        disposedRef,
+      );
+      cleanups.push(off);
     }
 
     return () => {
-      map.off("rotate", updateCompass);
+      disposedRef.current = true;
+      cleanups.forEach((fn) => {
+        try {
+          fn();
+        } catch {
+          /* noop */
+        }
+      });
       map.remove();
     };
   }, [center, zoom, offlineBoundary, routeData]);
