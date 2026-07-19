@@ -42,7 +42,7 @@ export function MapCanvas({
   zoom?: number;
   className?: string;
   /** Optional GeoJSON polygon marking a cached / offline-available area. */
-  offlineBoundary?: GeoJSON.Feature | GeoJSON.FeatureCollection;
+  offlineBoundary?: GeoJSON.Feature | GeoJSON.FeatureCollection | any;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
