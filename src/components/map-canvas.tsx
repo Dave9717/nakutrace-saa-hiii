@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import maplibregl, { type GeoJSONSourceSpecification } from "maplibre-gl";
 import { RouteData, OfflineBoundary } from "@/lib/map-utils";
 
+type MapStyleVariant = "dark" | "light";
+
 /**
  * Run a style-mutating callback only once the MapLibre style is fully loaded.
  * Safe against `Error: Style is not done loading` and against calls after unmount.
@@ -33,18 +35,46 @@ function whenStyleReady(map: maplibregl.Map, cb: () => void, disposedRef: { curr
   };
 }
 
+/** Return a MapLibre-compatible style definition for the given variant. */
+function getMapStyle(variant: MapStyleVariant): maplibregl.StyleSpecification {
+  const tiles =
+    variant === "dark"
+      ? ["https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png"]
+      : ["https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png"];
+
+  return {
+    version: 8,
+    sources: {
+      base: {
+        type: "raster",
+        tiles,
+        tileSize: 256,
+        attribution:
+          "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors &copy; <a href='https://carto.com/attributions'>CARTO</a>",
+      },
+    },
+    layers: [{ id: "base", type: "raster", source: "base" }],
+  };
+}
+
 export function MapCanvas({
   center = [37.5, 0.5] as [number, number],
   zoom = 5,
   className = "h-full w-full",
   routeData,
   offlineBoundary,
+  gpsPosition,
+  mapStyle = "dark",
 }: {
   center?: [number, number];
   zoom?: number;
   className?: string;
   routeData?: RouteData;
   offlineBoundary?: OfflineBoundary;
+  /** Current GPS position as [longitude, latitude] */
+  gpsPosition?: [number, number];
+  /** Tile style variant: "dark" (default) or "light" */
+  mapStyle?: MapStyleVariant;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -57,18 +87,7 @@ export function MapCanvas({
 
     const map = new maplibregl.Map({
       container: ref.current,
-      style: {
-        version: 8,
-        sources: {
-          osm: {
-            type: "raster",
-            tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
-            tileSize: 256,
-            attribution: "© OpenStreetMap contributors",
-          },
-        },
-        layers: [{ id: "osm", type: "raster", source: "osm" }],
-      },
+      style: getMapStyle(mapStyle),
       center,
       zoom,
       attributionControl: false,
@@ -98,6 +117,18 @@ export function MapCanvas({
     };
     map.on("error", onError);
     cleanups.push(() => map.off("error", onError));
+
+    // GPS position marker — added only once style is ready
+    if (gpsPosition) {
+      const off = whenStyleReady(
+        map,
+        () => {
+          addGpsMarker(map, gpsPosition);
+        },
+        disposedRef,
+      );
+      cleanups.push(off);
+    }
 
     // Offline cache boundary layer — added only once style is ready
     if (offlineBoundary) {
@@ -134,11 +165,101 @@ export function MapCanvas({
       });
       map.remove();
     };
-  }, [center, zoom, offlineBoundary, routeData]);
+  }, [center, zoom, offlineBoundary, routeData, gpsPosition, mapStyle]);
 
   return (
     <div ref={ref} className={className} />
   );
+}
+
+// Add GPS position marker with pulsing blue dot
+function addGpsMarker(map: maplibregl.Map, position: [number, number]) {
+  const id = "gps-position";
+  const pulseId = "gps-position-pulse";
+
+  // Remove existing GPS layers if present
+  if (map.getSource(id)) {
+    map.removeLayer(pulseId);
+    map.removeLayer(id);
+    map.removeSource(id);
+  }
+
+  map.addSource(id, {
+    type: "geojson",
+    data: {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          geometry: {
+            type: "Point",
+            coordinates: position,
+          },
+          properties: {},
+        },
+      ],
+    },
+  });
+
+  // Pulsing outer ring
+  map.addLayer({
+    id: pulseId,
+    type: "circle",
+    source: id,
+    paint: {
+      "circle-radius": 18,
+      "circle-color": "#3b82f6",
+      "circle-opacity": 0.3,
+      "circle-stroke-width": 0,
+    },
+  });
+
+  // Solid inner dot
+  map.addLayer({
+    id: id,
+    type: "circle",
+    source: id,
+    paint: {
+      "circle-radius": 8,
+      "circle-color": "#3b82f6",
+      "circle-opacity": 1,
+      "circle-stroke-width": 3,
+      "circle-stroke-color": "#ffffff",
+    },
+  });
+
+  // Animate the pulse ring
+  let animationFrame: number;
+  let radius = 18;
+  let expanding = true;
+  let isCancelled = false;
+
+  const animate = () => {
+    if (isCancelled) return;
+    if (expanding) {
+      radius = Math.min(radius + 0.3, 30);
+      if (radius >= 30) expanding = false;
+    } else {
+      radius = Math.max(radius - 0.3, 18);
+      if (radius <= 18) expanding = true;
+    }
+
+    try {
+      map.setPaintProperty(pulseId, "circle-radius", radius);
+      map.setPaintProperty(pulseId, "circle-opacity", Math.max(0.1, 0.3 - (radius - 18) * 0.025));
+    } catch {
+      isCancelled = true;
+      return;
+    }
+    animationFrame = requestAnimationFrame(animate);
+  };
+
+  animationFrame = requestAnimationFrame(animate);
+
+  return () => {
+    isCancelled = true;
+    cancelAnimationFrame(animationFrame);
+  };
 }
 
 // Add offline cache boundary visualization

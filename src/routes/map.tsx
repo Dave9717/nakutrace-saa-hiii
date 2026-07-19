@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/app-shell";
 import { MapCanvas } from "@/components/map-canvas";
@@ -13,6 +14,8 @@ import {
   Shield,
   ShieldAlert,
   Navigation,
+  Sun,
+  Moon,
 } from "lucide-react";
 import {
   generateMockRoute,
@@ -48,6 +51,7 @@ const safety = [
 function MapPage() {
   const routeData = generateMockRoute();
   const offlineBoundary = generateMockOfflineBoundary();
+  const [mapStyle, setMapStyle] = useState<"dark" | "light">("dark");
 
   const handleModeChange = (mode: TransportMode) => {
     console.log(`Transport mode changed to: ${mode}`);
@@ -61,7 +65,18 @@ function MapPage() {
           <MapCanvas
             routeData={routeData}
             offlineBoundary={offlineBoundary}
+            mapStyle={mapStyle}
           />
+          {/* Map style toggle */}
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setMapStyle((prev) => (prev === "dark" ? "light" : "dark"))}
+            className="absolute left-3 top-3 z-10 h-9 w-9 rounded-full bg-background/80 backdrop-blur-sm shadow-md"
+            title={`Switch to ${mapStyle === "dark" ? "light" : "dark"} map`}
+          >
+            {mapStyle === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </Button>
           <TransportModeBar onModeChange={handleModeChange} />
           <CoordinateHUD
             latitude={-0.3869}
