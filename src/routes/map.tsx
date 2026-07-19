@@ -1,22 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/app-shell";
 import { MapCanvas } from "@/components/map-canvas";
+import { CoordinateHUD } from "@/components/coordinate-hud";
+import { TransportModeBar, type TransportMode } from "@/components/transport-mode-selector";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  Footprints,
-  Car,
-  Bike,
-  Bus,
-  Truck,
-  Navigation,
   Fuel,
   Droplets,
   Hospital,
   Shield,
   ShieldAlert,
+  Navigation,
 } from "lucide-react";
+import {
+  generateMockRoute,
+  generateMockOfflineBoundary,
+} from "@/lib/map-utils";
 
 export const Route = createFileRoute("/map")({
   head: () => ({
@@ -36,14 +37,6 @@ export const Route = createFileRoute("/map")({
   component: MapPage,
 });
 
-const modes = [
-  { icon: Footprints, label: "Walk" },
-  { icon: Car, label: "Car" },
-  { icon: Bike, label: "Bike" },
-  { icon: Bus, label: "Transit" },
-  { icon: Truck, label: "Off-road" },
-  { icon: Navigation, label: "Safari" },
-];
 
 const safety = [
   { icon: Fuel, label: "Last fuel", value: "12 km · Isiolo" },
@@ -53,24 +46,34 @@ const safety = [
 ];
 
 function MapPage() {
+  const routeData = generateMockRoute();
+  const offlineBoundary = generateMockOfflineBoundary();
+
+  const handleModeChange = (mode: TransportMode) => {
+    console.log(`Transport mode changed to: ${mode}`);
+    // Future: re-route with new transport profile
+  };
+
   return (
     <AppShell title="Map" subtitle="Offline vector tiles · OSM">
       <div className="grid h-[calc(100vh-3.5rem)] gap-0 lg:grid-cols-[1fr_360px]">
         <div className="relative">
-          <MapCanvas />
-          <div className="pointer-events-none absolute inset-x-0 top-3 flex justify-center">
-            <div className="pointer-events-auto flex gap-1 rounded-full border border-border bg-card/90 p-1 shadow-lg backdrop-blur">
-              {modes.map((m) => (
-                <Button key={m.label} variant="ghost" size="sm" className="gap-1.5 rounded-full">
-                  <m.icon className="h-4 w-4" /> {m.label}
-                </Button>
-              ))}
-            </div>
-          </div>
+          <MapCanvas
+            routeData={routeData}
+            offlineBoundary={offlineBoundary}
+          />
+          <TransportModeBar onModeChange={handleModeChange} />
+          <CoordinateHUD
+            latitude={-0.3869}
+            longitude={37.6869}
+            bearing={340}
+            altitude={1673}
+            accuracy={5}
+          />
           <Button
             variant="destructive"
             size="lg"
-            className="absolute bottom-6 right-6 gap-2 rounded-full px-5 shadow-xl"
+            className="absolute bottom-6 right-6 gap-2 rounded-full px-5 shadow-xl z-10"
             style={{ boxShadow: "var(--shadow-elegant)" }}
           >
             <ShieldAlert className="h-5 w-5" /> SOS
