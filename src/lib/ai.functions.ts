@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const Schema = z.object({
   messages: z.array(
@@ -23,6 +24,7 @@ const OFFLINE_FALLBACK = `I can't reach the AI gateway right now, so here's a sa
 Try again in a moment for tailored guidance. This message is informational only and does not replace professional emergency services.`;
 
 export const askAssistant = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input) => Schema.parse(input))
   .handler(async ({ data }) => {
     const apiKey = process.env.LOVABLE_API_KEY;
