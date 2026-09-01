@@ -66,8 +66,9 @@ function PacksPage() {
 
   useEffect(() => {
     if (!user) { setInstalled(new Set()); return; }
-    supabase.from("knowledge_pack_downloads").select("pack_slug").then(({ data }) => {
-      setInstalled(new Set((data ?? []).map((d: any) => d.pack_slug)));
+    supabase.from("knowledge_pack_downloads").select("pack_slug").then(({ data, error }) => {
+      if (error) { console.error("Failed to load knowledge packs", error); return; }
+      setInstalled(new Set((data ?? []).map((d) => d.pack_slug)));
     });
   }, [user]);
 

@@ -16,6 +16,9 @@ export function useAuth() {
       setSession(data.session);
       setUser(data.session?.user ?? null);
       setLoading(false);
+    }).catch((err) => {
+      console.error("Failed to fetch auth session", err);
+      setLoading(false);
     });
     return () => subscription.unsubscribe();
   }, []);

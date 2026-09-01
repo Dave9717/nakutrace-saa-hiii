@@ -44,13 +44,15 @@ function ConvoyPage() {
 
   async function refreshConvoys() {
     if (!user) return;
-    const { data: mem } = await supabase.from("convoy_members").select("convoy_id").eq("user_id", user.id);
+    const { data: mem, error: memErr } = await supabase.from("convoy_members").select("convoy_id").eq("user_id", user.id);
+    if (memErr) { console.error("Failed to load convoy memberships", memErr); return; }
     const ids = (mem ?? []).map((m) => m.convoy_id);
     if (ids.length === 0) {
       setConvoys([]);
       return;
     }
-    const { data } = await supabase.from("convoys").select("*").in("id", ids).order("created_at", { ascending: false });
+    const { data, error: convoyErr } = await supabase.from("convoys").select("*").in("id", ids).order("created_at", { ascending: false });
+    if (convoyErr) console.error("Failed to load convoys", convoyErr);
     setConvoys((data ?? []) as Convoy[]);
     if (!activeId && data && data.length) setActiveId(data[0].id);
   }
@@ -63,16 +65,19 @@ function ConvoyPage() {
     if (!activeId) return;
     let cancelled = false;
     (async () => {
-      const [{ data: msgs }, { data: mems }] = await Promise.all([
+      const [msgsResult, memsResult] = await Promise.all([
         supabase.from("convoy_messages").select("*").eq("convoy_id", activeId).order("created_at", { ascending: true }).limit(100),
         supabase.from("convoy_members").select("user_id, role").eq("convoy_id", activeId),
       ]);
+      if (msgsResult.error) console.error("Failed to load convoy messages", msgsResult.error);
+      if (memsResult.error) console.error("Failed to load convoy members", memsResult.error);
       if (cancelled) return;
-      setMessages((msgs ?? []) as Message[]);
-      const userIds = (mems ?? []).map((m) => m.user_id);
-      const { data: profiles } = await supabase.from("profiles").select("id, display_name, call_sign").in("id", userIds);
+      setMessages((msgsResult.data ?? []) as Message[]);
+      const userIds = (memsResult.data ?? []).map((m) => m.user_id);
+      const { data: profiles, error: profilesErr } = await supabase.from("profiles").select("id, display_name, call_sign").in("id", userIds);
+      if (profilesErr) console.error("Failed to load member profiles", profilesErr);
       const pmap = new Map((profiles ?? []).map((p) => [p.id, p]));
-      setMembers((mems ?? []).map((m) => ({
+      setMembers((memsResult.data ?? []).map((m) => ({
         user_id: m.user_id,
         role: m.role,
         display_name: pmap.get(m.user_id)?.display_name ?? null,
@@ -95,7 +100,8 @@ function ConvoyPage() {
     if (!user || !name.trim()) return;
     const { data, error } = await supabase.from("convoys").insert({ owner_id: user.id, name: name.trim(), region: region.trim() || null }).select().single();
     if (error) return toast.error(error.message);
-    await supabase.from("convoy_members").insert({ convoy_id: data.id, user_id: user.id, role: "leader" });
+    const { error: memberErr } = await supabase.from("convoy_members").insert({ convoy_id: data.id, user_id: user.id, role: "leader" });
+    if (memberErr) console.error("Failed to add leader to convoy", memberErr);
     setName(""); setRegion("");
     await refreshConvoys();
     setActiveId(data.id);
@@ -116,7 +122,8 @@ function ConvoyPage() {
 
   async function leaveConvoy(id: string) {
     if (!user) return;
-    await supabase.from("convoy_members").delete().match({ convoy_id: id, user_id: user.id });
+    const { error } = await supabase.from("convoy_members").delete().match({ convoy_id: id, user_id: user.id });
+    if (error) return toast.error(error.message);
     if (activeId === id) setActiveId(null);
     await refreshConvoys();
     toast.success("Left convoy");

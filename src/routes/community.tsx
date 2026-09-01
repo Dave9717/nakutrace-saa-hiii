@@ -62,18 +62,19 @@ function CommunityPage() {
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
       (p) => setCoords({ lat: p.coords.latitude, lng: p.coords.longitude }),
-      () => {},
+      (err) => console.warn("Geolocation unavailable", err.message),
     );
   }, []);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("community_reports")
         .select("*")
         .order("created_at", { ascending: false })
         .limit(50);
+      if (error) console.error("Failed to load community reports", error);
       if (!cancelled) setReports((data ?? []) as Report[]);
     })();
     const channel = supabase

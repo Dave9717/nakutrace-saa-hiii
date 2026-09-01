@@ -43,12 +43,14 @@ function GuardianPage() {
 
   async function load() {
     if (!user) return;
-    const [{ data: g }, { data: c }] = await Promise.all([
+    const [guardiansResult, checkinsResult] = await Promise.all([
       supabase.from("guardians").select("*").order("created_at", { ascending: false }),
       supabase.from("guardian_checkins").select("*").order("created_at", { ascending: false }).limit(20),
     ]);
-    setGuardians((g ?? []) as Guardian[]);
-    setCheckins((c ?? []) as Checkin[]);
+    if (guardiansResult.error) console.error("Failed to load guardians", guardiansResult.error);
+    if (checkinsResult.error) console.error("Failed to load check-ins", checkinsResult.error);
+    setGuardians((guardiansResult.data ?? []) as Guardian[]);
+    setCheckins((checkinsResult.data ?? []) as Checkin[]);
   }
   useEffect(() => { load(); }, [user]);
 
